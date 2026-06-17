@@ -24,18 +24,33 @@ export function drawSky(ctx, w, h) {
   ctx.fillRect(0, 0, w, h * 0.5);
 }
 
-export function drawBuildings(ctx, w, h) {
+export function generateBuildings(w, h) {
   const buildingH = h * 0.22;
   const y = h * 0.28;
+  const buildings = [];
   for (let x = 0; x < w; x += 60 + Math.random() * 40) {
     const bw = 40 + Math.random() * 30;
     const bh = buildingH * (0.6 + Math.random() * 0.4);
-    ctx.fillStyle = BUILDING_COLORS[Math.floor(Math.random() * BUILDING_COLORS.length)];
-    ctx.fillRect(x, y + buildingH - bh, bw, bh);
+    buildings.push({
+      x,
+      bw,
+      bh,
+      color: BUILDING_COLORS[Math.floor(Math.random() * BUILDING_COLORS.length)],
+    });
+  }
+  return buildings;
+}
+
+export function drawBuildings(ctx, buildings, h) {
+  const buildingH = h * 0.22;
+  const y = h * 0.28;
+  for (const b of buildings) {
+    ctx.fillStyle = b.color;
+    ctx.fillRect(b.x, y + buildingH - b.bh, b.bw, b.bh);
     ctx.fillStyle = '#64748B';
-    for (let wy = y + buildingH - bh + 8; wy < y + buildingH - 4; wy += 12) {
-      ctx.fillRect(x + 6, wy, 8, 7);
-      ctx.fillRect(x + bw - 14, wy, 8, 7);
+    for (let wy = y + buildingH - b.bh + 8; wy < y + buildingH - 4; wy += 12) {
+      ctx.fillRect(b.x + 6, wy, 8, 7);
+      ctx.fillRect(b.x + b.bw - 14, wy, 8, 7);
     }
   }
 }
@@ -65,7 +80,7 @@ export function drawGrass(ctx, w, h) {
 }
 
 export function drawStudent(ctx, x, y, scale = 1, options = {}) {
-  const { wearingHelmet = false, isStanding = false, isOnBike = false } = options;
+  const { wearingHelmet = false } = options;
   ctx.save();
   ctx.translate(x, y);
   ctx.scale(scale, scale);
