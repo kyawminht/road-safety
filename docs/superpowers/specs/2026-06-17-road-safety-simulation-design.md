@@ -231,6 +231,19 @@ All 5 modules play in ~80 seconds total. The user watches the entire feed in und
 - **JavaScript disabled:** Show static Burmese text lessons (basic HTML)
 - **Slow network:** All content is in JS bundle — no network calls needed after initial load
 
+## 🌐 Language: 100% Burmese (ျမန္မာလို)
+
+**Every piece of user-facing text MUST be in Burmese.** This includes:
+
+- Module titles (e.g., "လူသွားစင်္ကြံ စည်းကမ်း")
+- Lesson overlay text (e.g., "လူသွားစင်္ကြံပေါ်မှာသွားပါ")
+- Completion message ("သင်ခန်းစာအားလုံးပြီးပါပြီ")
+- Any labels, titles, or visible text
+
+**Technical requirement:** Use Unicode Burmese, NOT Zawgyi. The `Noto Sans Myanmar` font handles this correctly.
+
+**No English fallback.** The app has no language switcher, no English translations. If a module data field exists, its value must be in Burmese.
+
 ## What This App Does NOT Include
 
 - No authentication or user accounts
