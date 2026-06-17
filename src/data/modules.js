@@ -5,7 +5,6 @@ export const MODULES = [
     title: 'လူသွားစင်္ကြံ စည်းကမ်း',
     lessonText: 'လူသွားစင်္ကြံပေါ်မှာသွားပါ',
     canvas: {
-      studentOnRoad: true,
       vehicleType: 'car',
       hasSidewalk: true,
     },
@@ -16,7 +15,6 @@ export const MODULES = [
     title: 'ဦးထုပ်ဆောင်းခြင်း',
     lessonText: 'ဦးထုပ်အမြဲဆောင်းပါ',
     canvas: {
-      studentOnRoad: false,
       vehicleType: 'motorcycle',
       hasSidewalk: false,
       extraStudents: 1,
@@ -28,7 +26,6 @@ export const MODULES = [
     title: 'ဘေးတွဲစီးနည်း',
     lessonText: 'ဘေးတွဲမှာ ၂ ယောက်ထက်ပိုမစီးရ',
     canvas: {
-      studentOnRoad: false,
       vehicleType: 'sidecar',
       hasSidewalk: false,
       extraStudents: 2,
@@ -40,7 +37,6 @@ export const MODULES = [
     title: 'စက်ဘီးစီးနည်း',
     lessonText: 'တစ်ယောက်ချင်းစီစီးပါ',
     canvas: {
-      studentOnRoad: true,
       vehicleType: 'bicycle',
       hasSidewalk: false,
       extraStudents: 1,
@@ -52,7 +48,6 @@ export const MODULES = [
     title: 'သုံးဘီးဆိုင်ကယ်စီးနည်း',
     lessonText: 'ထိုင်ပြီးစီးပါ',
     canvas: {
-      studentOnRoad: false,
       vehicleType: 'tricycle',
       hasSidewalk: false,
       extraStudents: 0,
@@ -67,5 +62,4 @@ export const TIMING = {
   lesson: 3000,
   rightRun: 5000,
   confetti: 2000,
-  transition: 1000,
 };
