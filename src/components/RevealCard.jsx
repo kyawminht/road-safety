@@ -1,12 +1,22 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { trackEvent } from '../utils/mixpanel.js';
 
 export default function RevealCard({ card, cardIndex, totalCards }) {
   const [isRevealed, setIsRevealed] = useState(false);
 
   const handleToggle = useCallback(() => {
-    setIsRevealed((prev) => !prev);
-  }, []);
+    setIsRevealed((prev) => {
+      const newState = !prev;
+      trackEvent('Card Flipped', {
+        card_id: card.id,
+        topic_id: card.topicId,
+        card_position: cardIndex + 1,
+        flip_to: newState ? 'correct' : 'wrong',
+      });
+      return newState;
+    });
+  }, [card, cardIndex]);
 
   return (
     <motion.div

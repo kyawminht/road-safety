@@ -2,6 +2,7 @@ import { useRef, useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import RevealCard from './components/RevealCard.jsx';
 import { TOPICS, FLIP_CARDS } from './data/flipCards.js';
+import { trackEvent } from './utils/mixpanel.js';
 
 export default function App() {
   const containerRef = useRef(null);
@@ -9,6 +10,13 @@ export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const allCards = FLIP_CARDS;
+
+  useEffect(() => {
+    trackEvent('App Opened', {
+      total_cards: allCards.length,
+      total_topics: TOPICS.length,
+    });
+  }, []);
 
   const currentTopic = useMemo(() => {
     const card = allCards[activeIndex];
@@ -36,7 +44,20 @@ export default function App() {
         }
 
         const idx = Number(best.target.dataset.index);
-        if (!isNaN(idx)) setActiveIndex(idx);
+        if (!isNaN(idx)) {
+          setActiveIndex(idx);
+          const card = allCards[idx];
+          if (card) {
+            const topic = TOPICS.find((t) => t.id === card.topicId);
+            trackEvent('Card Viewed', {
+              card_id: card.id,
+              topic_id: card.topicId,
+              topic_name: topic?.title || 'Unknown',
+              card_position: idx + 1,
+              total_cards: allCards.length,
+            });
+          }
+        }
       },
       { threshold: [0, 0.25, 0.5, 0.75, 1] }
     );
@@ -97,6 +118,7 @@ export default function App() {
         <a
           href="/road-safety.pdf"
           download
+          onClick={() => trackEvent('PDF Downloaded', { source: 'header_button' })}
           className="pointer-events-auto flex items-center gap-1.5 bg-teal-600/90 hover:bg-teal-500 backdrop-blur-md rounded-full px-3 py-1.5 border border-teal-400/30 transition-colors"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-white">
