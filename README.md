@@ -46,22 +46,6 @@ A mobile-first learning app that teaches road safety to Myanmar children (ages 6
 - **Engaging** — Visual-first approach matches how children actually learn
 - **Culturally Relevant** — Built specifically for Myanmar roads and Myanmar children
 
-## Contributing
-
-Contributions are welcome! Feel free to open issues or submit pull requests.
-
-```bash
-# Fork the repo
-# Create your feature branch
-git checkout -b feature/amazing-feature
-
-# Commit your changes
-git commit -m "Add amazing feature"
-
-# Push to the branch
-git push origin feature/amazing-feature
-```
-
 ## Acknowledgments
 
 - Built with ❤️ for the children of Myanmar
