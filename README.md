@@ -1,10 +1,10 @@
 # 🚦 လမ်းအန္တရာယ်ကင်းရှင်းရေး — Road Safety for Myanmar Children
 
 <p align="center">
-  <img src="public/1.png" width="23%" />
-  <img src="public/2.png" width="23%" />
-  <img src="public/3.png" width="23%" />
-  <img src="public/4.png" width="23%" />
+  <img src="public/1.png" height="300" />
+  <img src="public/2.png" height="300" />
+  <img src="public/3.png" height="300" />
+  <img src="public/4.png" height="300" />
 </p>
 
 ## The Problem
