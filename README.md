@@ -1,16 +1,48 @@
-# React + Vite
+# 🚦 လမ်းအန္တရာယ်ကင်းရှင်းရေး — Road Safety for Myanmar Children
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## The Problem
 
-Currently, two official plugins are available:
+Myanmar has one of the highest road fatality rates in Southeast Asia, with children being particularly vulnerable. Most schools lack projectors or screens to teach road safety interactively, and existing materials are outdated, text-heavy, and not engaging for young learners.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## The Solution
 
-## React Compiler
+A mobile-first learning app that teaches road safety to Myanmar children (ages 6–17) through **visual flip cards** — no reading required. Children see the wrong behavior (red ❌), tap to reveal the correct behavior (green ✅), and learn through color, icons, and simple Burmese captions.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- **Visual Flip Cards** — Tap to flip between wrong (❌) and right (✅) behavior
+- **Horizontal Story Feed** — Instagram-style swipeable feed, no complex navigation
+- **5 Safety Topics** — Walking, Helmet, Sidecar, Bicycle, Tricycle
+- **14+ Scenarios** — Real-world situations children encounter daily
+- **Downloadable Flashcards** — Teachers can download PDF on their phone and print for classroom use (no projector needed)
+- **Fully in Burmese** — All text in Myanmar Unicode for accessibility
+- **Mobile-First Design** — Optimized for 320px–428px screens
+- **Quiz Mode** — Optional "Which one is safe?" active recall practice
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## Live Demo
+
+🔗 [road-safety.vercel.app](https://road-safety.vercel.app/)
+
+## Why This Matters
+
+- **Accessibility** — Works on any phone, no app store required
+- **Teacher-Friendly** — PDF download lets teachers print and teach without technology
+- **Engaging** — Visual-first approach matches how children actually learn
+- **Culturally Relevant** — Built specifically for Myanmar roads and Myanmar children
+
+## License
+
+MIT
