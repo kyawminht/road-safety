@@ -19,18 +19,14 @@ A mobile-first learning app that teaches road safety to Myanmar children (ages 6
 - **Mobile-First Design** — Optimized for 320px–428px screens
 - **Quiz Mode** — Optional "Which one is safe?" active recall practice
 
-## Quick Start
 
-```bash
-# Install dependencies
-npm install
+## How It Works
 
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-```
+1. Children pick a **topic** (Walking, Helmet, Sidecar, Bicycle, or Tricycle)
+2. They see the **wrong behavior** (red ❌) on a visual card
+3. **Tap to flip** — the card reveals the **correct behavior** (green ✅)
+4. Each card has a simple **Burmese caption** — no reading skill required
+5. **Progress dots** show how many cards they've explored
 
 ## Live Demo
 
@@ -43,6 +39,33 @@ npm run build
 - **Engaging** — Visual-first approach matches how children actually learn
 - **Culturally Relevant** — Built specifically for Myanmar roads and Myanmar children
 
+## Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests.
+
+```bash
+# Fork the repo
+# Create your feature branch
+git checkout -b feature/amazing-feature
+
+# Commit your changes
+git commit -m "Add amazing feature"
+
+# Push to the branch
+git push origin feature/amazing-feature
+```
+
+## Acknowledgments
+
+- Built with ❤️ for the children of Myanmar
+- Illustrations designed for Myanmar road scenarios
+
 ## License
 
-MIT
+This project is for **educational purposes only**.
+
+- **Teachers** — You are free to use this app in your classroom. No permission needed.
+- **Students** — Learn from it, share it, and stay safe on the roads.
+- **Not for sale** — You may not sell this software, its content, or any derivative work.
+
+For other uses, please contact the author.
