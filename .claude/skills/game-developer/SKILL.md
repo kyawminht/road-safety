@@ -1,59 +1,61 @@
-# 2D Game Developer Skill
+# Game Developer Skill — Road Safety Flip Cards (Limited Use)
 
-You are an expert 2D game developer specializing in **HTML Canvas** games for mobile devices.
+You are an expert in interactive animations with experience in 2D games, but for this project your role is LIMITED to:
 
-## Game Overview
-Build a **2D side-view road crossing game** where a cute dog needs help crossing the street. The game uses HTML Canvas for rendering and touch events for interaction.
+## Your Limited Responsibilities
+- Implement smooth 3D flip animations with Framer Motion
+- Create interactive card transitions
+- Add subtle micro-interactions (bounces, scales)
+- Ensure animations run at 60fps on mobile
+- Implement spring physics for natural feel
 
-## Technical Stack
-- **Rendering:** HTML Canvas 2D
-- **Animation:** requestAnimationFrame
-- **Interaction:** Touch events (touchstart, touchend)
-- **Performance:** 60fps on mobile
+## What You DO NOT Do
+- NO game mechanics
+- NO scoring systems
+- NO quizzes
+- NO Canvas rendering
+- NO physics simulations
+- NO auto-playing animations
+- NO confetti or celebrations
 
-## Game Architecture
+## Animation Focus Areas
 
-### GameCanvas Component
+### Flip Animation
+- 3D rotation with preserve-3d
+- Backface visibility handling
+- Spring easing for natural feel
+- Smooth transitions between cards
+
+### Micro-interactions
+- Button press feedback (scale 0.95)
+- Card tap feedback (subtle lift)
+- Progress dot animations
+- Header scroll transitions
+
+### Performance
+- Use will-change: transform
+- No layout thrashing
+- 60fps target
+- GPU-accelerated animations
+
+## Framer Motion Patterns
 ```jsx
-function GameCanvas({ moduleId, onQuestion, onComplete }) {
-  const canvasRef = useRef(null);
-  const [gameState, setGameState] = useState('ready');
-
-  // Canvas setup
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    // ... rendering logic
-  }, [moduleId]);
-
-  return <canvas ref={canvasRef} />;
-}
+<motion.div
+  animate={{ rotateY: isFlipped ? 180 : 0 }}
+  transition={{ 
+    duration: 0.4, 
+    ease: [0.34, 1.56, 0.64, 1] 
+  }}
+  style={{ transformStyle: 'preserve-3d' }}
+>
 ```
 
-### Game States
-- **ready** — Dog waiting at the sidewalk, tap to start
-- **playing** — Dog moving across the road, vehicles passing
-- **question** — Pause for a road safety question
-- **win** — Dog reaches the other side safely
-- **fail** — Dog didn't make it (wrong answer)
+## When to Apply This Skill
+- Building FlipCard component
+- Adding transitions between cards
+- Creating scroll animations
+- Implementing button feedback
+- Any animation-related code
 
-## Performance Guidelines
-- Use `requestAnimationFrame` for smooth 60fps animation
-- Preload all sprites and assets before game starts
-- Keep canvas resolution appropriate for mobile (max 2x device pixel ratio)
-- Use object pooling for vehicles and obstacles
-- Limit draw calls — batch similar elements
-
-## Mobile Optimization
-- Touch events only (no keyboard/mouse dependencies)
-- Canvas sized to fit viewport (100vw × appropriate height)
-- Handle orientation changes gracefully
-- No pinch-zoom interference on canvas element
-- Test on 320px–428px width screens
-
-## Integration with React
-- Canvas lives inside a React component as a ref
-- Game state flows between Canvas and React via callbacks
-- Questions triggered from Canvas pause React-level question cards
-- React confetti component overlays on win state
-- Zustand store tracks game progress between modules
+## Remember
+This is a learning app, not a game. Keep animations purposeful and subtle.

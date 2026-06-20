@@ -1,11 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #1E3A5F;
-  --color-success: #10B981;
-  --color-danger: #EF4444;
-  --color-warning: #F59E0B;
-  --color-bg-dark: #0F172A;
+  --color-navy: #0F1A2E;
+  --color-warm-blue: #1E3A5F;
+  --color-teal: #0D9488;
+  --color-soft-red: #FEE2E2;
+  --color-deep-red: #DC2626;
+  --color-soft-green: #DCFCE7;
+  --color-deep-green: #16A34A;
+  --color-warm-gray: #F8FAFC;
+  --color-soft-gray: #E2E8F0;
+  --color-dark-text: #1E293B;
+  --color-mid-text: #64748B;
 }
 
 * {
@@ -16,13 +22,16 @@
 
 html {
   font-family: 'Noto Sans Myanmar', sans-serif;
+  font-size: 17px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: contain;
 }
 
 body {
-  background: var(--color-bg-dark);
-  color: #F8FAFC;
+  background: #F8FAFC;
+  color: #1E293B;
   min-height: 100dvh;
   overflow-x: hidden;
 }
@@ -30,4 +39,13 @@ body {
 #root {
   width: 100%;
   max-width: 100%;
+}
+
+/* Hide scrollbar for filter chips */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
