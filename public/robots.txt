@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://road-safety.vercel.app/sitemap.xml
+Sitemap: https://road-safety-mm.vercel.app/sitemap.xml
