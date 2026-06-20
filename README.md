@@ -1,5 +1,12 @@
 # 🚦 လမ်းအန္တရာယ်ကင်းရှင်းရေး — Road Safety for Myanmar Children
 
+<p align="center">
+  <img src="public/1.png" width="23%" />
+  <img src="public/2.png" width="23%" />
+  <img src="public/3.png" width="23%" />
+  <img src="public/4.png" width="23%" />
+</p>
+
 ## The Problem
 
 Myanmar has one of the highest road fatality rates in Southeast Asia, with children being particularly vulnerable. Most schools lack projectors or screens to teach road safety interactively, and existing materials are outdated, text-heavy, and not engaging for young learners.
