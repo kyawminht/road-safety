@@ -1,7 +1,8 @@
 ---
 marp: true
+auto-advance: 20
 theme: default
-paginate: true
+paginate: false
 transition: slide
 autoPlayMedia: true
 ---
