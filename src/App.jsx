@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useMemo } from 'react';
+import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import RevealCard from './components/RevealCard.jsx';
 import { TOPICS, FLIP_CARDS } from './data/flipCards.js';
@@ -10,6 +10,12 @@ export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const allCards = FLIP_CARDS;
+
+  const scrollToCard = useCallback((idx) => {
+    if (idx >= 0 && idx < cardRefs.current.length) {
+      cardRefs.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, []);
 
   useEffect(() => {
     trackEvent('App Opened', {
@@ -150,9 +156,37 @@ export default function App() {
                 card={card}
                 cardIndex={idx}
                 totalCards={allCards.length}
+                onNextCard={() => scrollToCard(idx + 1)}
               />
             </div>
           ))}
+
+          {/* ── Completion Screen ── */}
+          <div className="snap-start snap-always h-dvh md:h-auto md:aspect-[4/5] flex flex-col items-center justify-center bg-gradient-to-b from-teal-900 to-black text-white text-center p-8">
+            <motion.span
+              className="text-7xl mb-6 block"
+              initial={{ scale: 0, rotate: -20 }}
+              whileInView={{ scale: 1, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 12 }}
+              viewport={{ once: true }}
+            >
+              🎉
+            </motion.span>
+            <h2 className="text-2xl font-bold mb-3">ပြီးပါပြီ!</h2>
+            <p className="text-white/70 text-lg mb-6">ကလေးတိုင်း လုံခြုံပါစေ</p>
+            <a
+              href="/road-safety.pdf"
+              download
+              onClick={() => trackEvent('PDF Downloaded', { source: 'completion_screen' })}
+              className="flex items-center gap-2 bg-teal-600 hover:bg-teal-500 rounded-full px-6 py-3 border border-teal-400/30 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-white">
+                <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
+                <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+              </svg>
+              <span className="text-white font-semibold">PDF ဒေါင်းလုဒ်</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
