@@ -23,11 +23,11 @@ import WrongRain from '../assets/wrong1_umbrella.png';
 
 
 export const TOPICS = [
-  { id: "walking", title: "လူသွားစင်္ကြံ"},
-  { id: "helmet", title: "ဦးထုပ်ဆောင်းခြင်း"},
-  { id: "sidecar", title: "ဘေးတွဲစီးနည်း"},
-  { id: "bicycle", title: "စက်ဘီးစီးနည်း"},
-  { id: "tricycle", title: "ဆိုင်ကယ်စီးနည်း"},
+  { id: "walking", title: "လူသွားစင်္ကြံ", emoji: "🚶‍♂️" },
+  { id: "helmet", title: "ဦးထုပ်ဆောင်းခြင်း", emoji: "⛑️" },
+  { id: "sidecar", title: "ဘေးတွဲစီးနည်း", emoji: "🛵" },
+  { id: "bicycle", title: "စက်ဘီးစီးနည်း", emoji: "🚲" },
+  { id: "tricycle", title: "ဆိုင်ကယ်စီးနည်း", emoji: "🛺" },
 ];
 
 // All cards use the same two real PNG images:

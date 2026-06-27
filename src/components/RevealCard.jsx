@@ -22,7 +22,7 @@ export default function RevealCard({ card, cardIndex, totalCards, onNextCard }) 
     <motion.div
       onClick={handleToggle}
       whileTap={{ scale: 0.98 }}
-      className="h-dvh md:h-full w-full bg-black flex flex-col relative overflow-hidden cursor-pointer select-none"
+      className="h-full w-full bg-black flex flex-col relative overflow-hidden cursor-pointer select-none"
       style={{
         borderLeft: isRevealed
           ? '5px solid rgba(22, 163, 74, 0.85)'
@@ -117,28 +117,7 @@ export default function RevealCard({ card, cardIndex, totalCards, onNextCard }) 
           </span>
         </motion.button>
 
-        {/* ── Next card button (shown after reveal, hidden on last card) ── */}
-        <AnimatePresence>
-          {isRevealed && cardIndex < totalCards - 1 && (
-            <motion.button
-              onClick={(e) => { e.stopPropagation(); onNextCard?.(); }}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ duration: 0.3, delay: 0.4 }}
-              whileTap={{ scale: 0.96 }}
-              className="w-full h-[48px] rounded-xl text-sm font-bold tracking-wide
-                flex items-center justify-center gap-2
-                bg-white/10 text-white/90 border border-white/15
-                backdrop-blur-sm
-                active:bg-white/20
-                transition-colors duration-200"
-            >
-              <span>နောက်ကဒ်</span>
-              <span className="text-base">→</span>
-            </motion.button>
-          )}
-        </AnimatePresence>
+        
 
         {/* ── Counter ── */}
         <div className="flex items-center justify-center gap-2">
