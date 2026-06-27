@@ -37,18 +37,28 @@ export default function RulesPage() {
 
   return (
     <div className="flex-1 overflow-hidden flex flex-col bg-white">
-      {/* ── Header ── */}
-      <div className="bg-white border-b-2 border-gray-900 px-5 pt-6 pb-3">
-        <h1 className="text-xl font-bold text-gray-900 mb-0.5 tracking-tight">
-          လမ်းစည်းကမ်းများ
-        </h1>
-        <p className="text-sm text-gray-500">
-          ကလေးများအတွက် လမ်းအန္တရာယ်ကင်းရှင်းရေး လမ်းညွှန်
-        </p>
+      {/* ── Header Banner ── */}
+      <div className="relative bg-[#0D9488] overflow-hidden px-5 pt-6 pb-5">
+        {/* Decorative elements */}
+        <div className="absolute -right-6 -top-8 w-24 h-24 rounded-full bg-white/10 pointer-events-none" />
+        <div className="absolute right-8 top-2 w-10 h-10 rounded-full bg-white/8 pointer-events-none" />
+        <div className="absolute -left-4 -bottom-6 w-20 h-20 rounded-full bg-white/10 pointer-events-none" />
+
+        <div className="flex items-center gap-3 relative z-10">
+          <span className="text-2xl">🚦</span>
+          <div>
+            <h1 className="text-lg font-extrabold text-white tracking-tight">
+              လမ်းစည်းကမ်းများ
+            </h1>
+            <p className="text-white/70 text-xs font-medium">
+              ကလေးများအတွက် လမ်းအန္တရာယ်ကင်းရှင်းရေး လမ်းညွှန်
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* ── Filter Bar ── */}
-      <div className="bg-white border-b border-gray-200 px-5 py-3">
+      <div className="bg-white border-b-2 border-teal-600 px-5 py-3">
         <div className="flex gap-2 overflow-x-auto scrollbar-none">
           {AGE_GROUPS.map((group, idx) => (
             <button
@@ -78,13 +88,17 @@ export default function RulesPage() {
               viewport={{ once: true, margin: '-20px' }}
               variants={sectionVariant}
             >
-              {/* Category header */}
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-lg">{cat.icon}</span>
-                <h2
-                  className="text-sm font-extrabold uppercase tracking-wider"
-                  style={{ color: cat.color }}
-                >
+              {/* Category header — colored banner */}
+              <div
+                className="relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl mb-4 overflow-hidden"
+                style={{ backgroundColor: cat.color }}
+              >
+                {/* Decorative background circles */}
+                <div className="absolute -right-4 -top-4 w-16 h-16 rounded-full bg-white/10 pointer-events-none" />
+                <div className="absolute -left-2 -bottom-4 w-12 h-12 rounded-full bg-white/10 pointer-events-none" />
+
+                <span className="text-xl relative z-10">{cat.icon}</span>
+                <h2 className="text-sm font-extrabold text-white relative z-10 leading-tight">
                   {cat.title}
                 </h2>
               </div>
