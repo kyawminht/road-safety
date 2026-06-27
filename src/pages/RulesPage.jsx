@@ -49,7 +49,6 @@ export default function RulesPage() {
 
         <div className="relative z-10 px-5 pt-7 pb-5">
           <div className="flex items-center gap-3">
-            <span className="text-3xl">🚦</span>
             <div>
               <h1 className="text-xl font-extrabold text-white tracking-tight">
                 လမ်းစည်းကမ်းများ
@@ -104,7 +103,6 @@ export default function RulesPage() {
               >
                 <div className="absolute -right-4 -top-5 w-16 h-16 rounded-full bg-white/10 pointer-events-none" />
                 <div className="absolute -left-2 -bottom-4 w-12 h-12 rounded-full bg-white/10 pointer-events-none" />
-                <span className="text-lg relative z-10">{cat.icon}</span>
                 <h2 className="text-[13px] font-extrabold text-white relative z-10 leading-tight">
                   {cat.title}
                 </h2>
@@ -123,10 +121,15 @@ export default function RulesPage() {
                       <div className="absolute top-2 left-2 w-6 h-6 rounded-full bg-gray-900 text-white flex items-center justify-center text-[11px] font-extrabold z-10">
                         {i + 1}
                       </div>
-                      {/* Placeholder */}
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-5xl opacity-15">{cat.icon}</span>
-                      </div>
+                      {/* Placeholder — subtle crosshatch */}
+                      <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <pattern id={`hatch-${cat.id}`} patternUnits="userSpaceOnUse" width="16" height="16" patternTransform="rotate(45)">
+                            <line x1="0" y1="0" x2="0" y2="16" stroke="#D1D5DB" strokeWidth="0.8" />
+                          </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill={`url(#hatch-${cat.id})`} />
+                      </svg>
                     </div>
                     {/* Rule text */}
                     <p className="text-[11px] text-gray-600 mt-2.5 px-0.5 leading-relaxed font-semibold text-center">
@@ -148,9 +151,9 @@ export default function RulesPage() {
           </p>
           <a
             href="/learn"
-            className="inline-flex items-center gap-2 bg-[#0D9488] hover:bg-[#0F766E] text-white rounded-full px-6 py-3 font-bold text-sm transition-colors"
+            className="inline-flex bg-[#0D9488] hover:bg-[#0F766E] text-white rounded-full px-6 py-3 font-bold text-sm transition-colors"
           >
-            📚 ကတ်များဖြင့် လေ့လာရန်
+            ကတ်များဖြင့် လေ့လာရန်
           </a>
         </div>
       </div>
