@@ -33,6 +33,8 @@ export function useGameLoop(canvasRef, canvasSize) {
     // Callbacks
     onStop: null,
     onExit: null,
+    onWalkStart: null,
+    onWalkStop: null,
 
     // Canvas dimensions
     width: 0,
@@ -117,6 +119,7 @@ export function useGameLoop(canvasRef, canvasSize) {
           s.charX = STOP_X_RATIO;
           s.charStopped = true;
           s.charWalking = false;
+          if (s.onWalkStop) s.onWalkStop();
           if (s.onStop) s.onStop();
         }
 
@@ -124,6 +127,7 @@ export function useGameLoop(canvasRef, canvasSize) {
           s.charVisible = false;
           s.charWalking = false;
           s.charExiting = false;
+          if (s.onWalkStop) s.onWalkStop();
           if (s.onExit) s.onExit();
         }
       }
@@ -136,6 +140,7 @@ export function useGameLoop(canvasRef, canvasSize) {
           s.charVisible = false;
           s.charWalking = false;
           s.charExiting = false;
+          if (s.onWalkStop) s.onWalkStop();
           if (s.onExit) s.onExit();
         }
       }
@@ -168,6 +173,7 @@ export function useGameLoop(canvasRef, canvasSize) {
     s.charExiting = false;
     s.charImage = charImage || null;
     s.charSilhouetteColor = silhouetteColor || "#333";
+    if (s.onWalkStart) s.onWalkStart();
   }, []);
 
   const continueWalking = useCallback(() => {
@@ -175,6 +181,7 @@ export function useGameLoop(canvasRef, canvasSize) {
     s.charStopped = false;
     s.charWalking = true;
     s.charExiting = true;
+    if (s.onWalkStart) s.onWalkStart();
   }, []);
 
   const setNightTransition = useCallback(() => {
@@ -184,6 +191,8 @@ export function useGameLoop(canvasRef, canvasSize) {
 
   const setOnStop = useCallback((cb) => { stateRef.current.onStop = cb; }, []);
   const setOnExit = useCallback((cb) => { stateRef.current.onExit = cb; }, []);
+  const setOnWalkStart = useCallback((cb) => { stateRef.current.onWalkStart = cb; }, []);
+  const setOnWalkStop = useCallback((cb) => { stateRef.current.onWalkStop = cb; }, []);
 
   const reset = useCallback(() => {
     const s = stateRef.current;
@@ -204,6 +213,8 @@ export function useGameLoop(canvasRef, canvasSize) {
     setNightTransition,
     setOnStop,
     setOnExit,
+    setOnWalkStart,
+    setOnWalkStop,
     reset,
   };
 }

@@ -1,7 +1,12 @@
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { CHARACTERS } from "./gameData";
 
-export default function EndScreen({ score, answers, onPlayAgain, onBack }) {
+export default function EndScreen({ score, answers, onPlayAgain, onBack, onApplause }) {
+  useEffect(() => {
+    if (onApplause) onApplause();
+  }, [onApplause]);
+
   const total = CHARACTERS.length;
   const perfect = score === total;
 

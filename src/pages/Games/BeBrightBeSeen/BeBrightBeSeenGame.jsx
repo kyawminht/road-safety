@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { CHARACTERS, BG_DAY, BG_NIGHT, drawSceneFallback } from "./gameData";
 import { useImagePreloader } from "./useImagePreloader";
 import { useGameLoop } from "./useGameLoop";
+import { useSounds } from "./useSounds";
 import StartScreen from "./StartScreen";
 import QuestionModal from "./QuestionModal";
 import EndScreen from "./EndScreen";
@@ -80,8 +81,20 @@ export default function BeBrightBeSeenGame({ onNavChange }) {
     setNightTransition,
     setOnStop,
     setOnExit,
+    setOnWalkStart,
+    setOnWalkStop,
     reset,
   } = useGameLoop(canvasRef, canvasSize);
+
+  // Sound effects
+  const {
+    startFootsteps,
+    stopFootsteps,
+    playCorrect,
+    playWrong,
+    playIntro,
+    playApplause,
+  } = useSounds();
 
   // Pass background images to game loop once loaded
   useEffect(() => {
@@ -121,6 +134,12 @@ export default function BeBrightBeSeenGame({ onNavChange }) {
     setOnExit(handleCharacterExit);
   }, [handleCharacterStop, handleCharacterExit, setOnStop, setOnExit]);
 
+  // Wire footstep sounds to character walking
+  useEffect(() => {
+    setOnWalkStart(startFootsteps);
+    setOnWalkStop(stopFootsteps);
+  }, [startFootsteps, stopFootsteps, setOnWalkStart, setOnWalkStop]);
+
   useEffect(() => {
     if (gameState !== "playing" || charStartedRef.current) return;
     startCharByIndex(currentCharIndex);
@@ -139,7 +158,12 @@ export default function BeBrightBeSeenGame({ onNavChange }) {
     (answer) => {
       const char = CHARACTERS[currentCharIndex];
       const correct = answer === char.correctAnswer;
-      if (correct) setScore((s) => s + 1);
+      if (correct) {
+        setScore((s) => s + 1);
+        playCorrect();
+      } else {
+        playWrong();
+      }
       setAnswers((a) => [...a, correct]);
       setFeedbackText(correct ? char.feedbackCorrect : char.feedbackWrong);
       setFeedbackIsCorrect(correct);
@@ -182,7 +206,7 @@ export default function BeBrightBeSeenGame({ onNavChange }) {
       )}
 
       {!loading && gameState === "start" && (
-        <StartScreen onStart={handleStart} />
+        <StartScreen onStart={handleStart} onIntro={playIntro} />
       )}
 
       {gameState === "paused" && (
@@ -207,6 +231,7 @@ export default function BeBrightBeSeenGame({ onNavChange }) {
           answers={answers}
           onPlayAgain={handlePlayAgain}
           onBack={handleBack}
+          onApplause={playApplause}
         />
       )}
     </div>

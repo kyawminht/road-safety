@@ -1,6 +1,11 @@
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
-export default function StartScreen({ onStart }) {
+export default function StartScreen({ onStart, onIntro }) {
+  useEffect(() => {
+    if (onIntro) onIntro();
+  }, [onIntro]);
+
   return (
     <div className="start-screen-overlay">
       <motion.h1
