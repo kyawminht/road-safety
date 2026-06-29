@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Asset Generator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #1a1a2e; color: #eee; font: 16px/1.6 system-ui, sans-serif; padding: 20px; text-align: center; }
+  h1 { color: #FFD700; margin-bottom: 8px; }
+  p { color: #94a3b8; margin-bottom: 24px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; }
+  .card { background: #16213e; border-radius: 16px; padding: 16px; max-width: 500px; }
+  .card h2 { font-size: 18px; margin-bottom: 8px; color: #FFD700; }
+  .card canvas { border: 2px solid #333; border-radius: 8px; display: block; margin: 0 auto 12px; max-width: 100%; }
+  .card button { background: #0D9488; color: #fff; border: none; border-radius: 10px; padding: 10px 24px; font-size: 15px; cursor: pointer; transition: .15s; }
+  .card button:hover { background: #0f766e; transform: scale(1.03); }
+  .card button:active { transform: scale(.97); }
+</style>
+</head>
+<body>
+<h1>🎮 Be Bright Be Seen — Asset Generator</h1>
+<p>Each scene is rendered at 1920×1080. Click "Download" to save the PNG to <code>public/images/games/</code></p>
+<div class="grid" id="grid"></div>
+
+<script>
+// ─── Shared constants ───
+const W = 1920, H = 1080;
+const ROAD_TOP = 0.38;    // where road starts (below buildings)
+const ROAD_BOTTOM = 0.72; // where road ends (sidewalk)
+const HORIZON = 0.35;     // horizon line
+
+// ─── Helpers ───
+function lerpColor(a, b, t) {
+  const ah = parseInt(a.replace('#',''), 16), bh = parseInt(b.replace('#',''), 16);
+  const ar = (ah>>16)&0xff, ag = (ah>>8)&0xff, ab = ah&0xff;
+  const br = (bh>>16)&0xff, bg = (bh>>8)&0xff, bb = bh&0xff;
+  return `rgb(${Math.round(ar+(br-ar)*t)},${Math.round(ag+(bg-ag)*t)},${Math.round(ab+(bb-ab)*t)})`;
+}
+
+// ─── Day scene ───
+function drawDayScene(cvs) {
+  cvs.width = W; cvs.height = H;
+  const ctx = cvs.getContext('2d');
+  const w = W, h = H;
+
+  // Sky gradient
+  const sky = ctx.createLinearGradient(0, 0, 0, h * HORIZON);
+  sky.addColorStop(0, '#5B9BD5');
+  sky.addColorStop(0.6, '#87CEEB');
+  sky.addColorStop(1, '#B5DCF5');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, h * HORIZON);
+
+  // Clouds
+  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  function cloud(cx, cy, cw, ch) {
+    ctx.beginPath(); ctx.ellipse(cx, cy, cw*.5, ch, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cx+cw*.25, cy-ch*.3, cw*.4, ch*1.2, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cx-cw*.2, cy+ch*.1, cw*.35, ch*.9, 0, 0, Math.PI*2); ctx.fill();
+  }
+  cloud(w*.12, h*.07, w*.16, h*.04);
+  cloud(w*.48, h*.05, w*.2, h*.035);
+  cloud(w*.78, h*.09, w*.14, h*.03);
+
+  // Buildings
+  const blds = [
+    [0, .14, .14, '#88949E'], [.11, .1, .18, '#9DA9B2'],
+    [.23, .13, .11, '#8A959F'], [.38, .09, .16, '#77886B'],
+    [.49, .12, .12, '#94A1AD'], [.63, .1, .2, '#6D7882'],
+    [.75, .11, .13, '#9DA9B2'], [.88, .16, .09, '#7F8E9A'],
+  ];
+  const groundY = h * HORIZON;
+  blds.forEach(([xr, bw, bh, color]) => {
+    const bx = w * xr, bW = w * bw, bH = h * bh, by = groundY - bH;
+    ctx.fillStyle = color;
+    ctx.fillRect(bx, by, bW, bH);
+    // Windows
+    const cols = Math.max(1, Math.floor(bW / 25));
+    const rows = Math.max(1, Math.floor(bH / 18));
+    const ww = bW * .08, wh = bH * .06;
+    const gx = (bW - cols * ww) / (cols + 1);
+    const gy = (bH - rows * wh) / (rows + 1);
+    ctx.fillStyle = '#BFE4FA';
+    for (let r = 0; r < rows; r++)
+      for (let c = 0; c < cols; c++)
+        ctx.fillRect(bx + gx + c*(ww+gx), by + gy + r*(wh+gy), ww, wh);
+  });
+
+  // Green strip / trees behind sidewalk
+  ctx.fillStyle = '#7CA860';
+  ctx.fillRect(0, h * ROAD_BOTTOM, w, h * .015);
+  ctx.fillStyle = '#68904E';
+  for (let i = 0; i < 12; i++) {
+    const tx = w * .05 + w * .08 * i;
+    ctx.beginPath();
+    ctx.arc(tx, h * ROAD_BOTTOM, w * .025, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Road base (dark asphalt)
+  const roadTop = h * ROAD_TOP;
+  const roadBot = h * ROAD_BOTTOM;
+  const roadGrad = ctx.createLinearGradient(0, roadTop, 0, roadBot);
+  roadGrad.addColorStop(0, '#3D3D3D');
+  roadGrad.addColorStop(.4, '#4A4A4A');
+  roadGrad.addColorStop(1, '#3A3A3A');
+  ctx.fillStyle = roadGrad;
+  ctx.beginPath();
+  ctx.moveTo(0, roadBot);
+  ctx.lineTo(w, roadBot);
+  ctx.lineTo(w, roadTop);
+  ctx.lineTo(0, roadTop);
+  ctx.closePath();
+  ctx.fill();
+
+  // Lane markings (perspective dashes)
+  for (let i = 0; i < 10; i++) {
+    const t = i / 10;
+    const y1 = roadTop + (roadBot - roadTop) * t;
+    const y2 = roadTop + (roadBot - roadTop) * (t + .055);
+    const halfW = 6 + 90 * (1 - t);
+    ctx.fillStyle = '#FFF';
+    ctx.fillRect(w/2 - halfW, y1, halfW, y2 - y1);
+    ctx.fillRect(w/2, y1, halfW, y2 - y1);
+  }
+
+  // Zebra crossing
+  const zx = w * .3, zy1 = h * .42, zy2 = h * .68, zcw = w * .4;
+  const nStr = 12;
+  ctx.fillStyle = '#FFFFFF';
+  for (let i = 0; i < nStr; i++) {
+    const t = i / (nStr - 1);
+    const bx = zx + t * zcw;
+    const sW = zcw / nStr;
+    const topW = sW * (.35 + .65 * t);
+    ctx.beginPath();
+    ctx.moveTo(bx - topW/2, zy1);
+    ctx.lineTo(bx + topW/2, zy1);
+    ctx.lineTo(bx + sW/2, zy2);
+    ctx.lineTo(bx - sW/2, zy2);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Traffic light (red)
+  const tlX = w * .8, tlY = h * .05, tlH = roadBot - h * .05;
+  ctx.fillStyle = '#4A4A4A';
+  ctx.fillRect(tlX - 4, tlY, 8, tlH);
+  const boxX = tlX - 18, boxY = tlY - 45, boxW = 36, boxH = 90;
+  ctx.fillStyle = '#2A2A2A';
+  ctx.beginPath();
+  ctx.roundRect(boxX, boxY, boxW, boxH, 6);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(tlX, boxY + 18, 9, 0, Math.PI*2);
+  ctx.fillStyle = '#EF4444';
+  ctx.fill();
+  ctx.shadowColor = 'rgba(239,68,68,.7)'; ctx.shadowBlur = 12; ctx.fill(); ctx.shadowBlur = 0;
+  ctx.beginPath();
+  ctx.arc(tlX, boxY + 45, 9, 0, Math.PI*2);
+  ctx.fillStyle = '#4A3A0A'; ctx.fill();
+  ctx.beginPath();
+  ctx.arc(tlX, boxY + 72, 9, 0, Math.PI*2);
+  ctx.fillStyle = '#0A3A0A'; ctx.fill();
+
+  // Sidewalk
+  ctx.fillStyle = '#D1D5DB';
+  ctx.fillRect(0, roadBot, w, h * .04);
+  for (let i = 1; i < 4; i++) {
+    ctx.strokeStyle = '#C0C5CA';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, roadBot + h * .04 * i / 4);
+    ctx.lineTo(w, roadBot + h * .04 * i / 4);
+    ctx.stroke();
+  }
+
+  // Below sidewalk (dark — covered by dashboard)
+  ctx.fillStyle = '#0F0F0F';
+  ctx.fillRect(0, roadBot + h * .04, w, h - roadBot - h * .04);
+}
+
+// ─── Night scene ───
+function drawNightScene(cvs) {
+  cvs.width = W; cvs.height = H;
+  const ctx = cvs.getContext('2d');
+  const w = W, h = H;
+
+  // Night sky
+  const sky = ctx.createLinearGradient(0, 0, 0, h * HORIZON);
+  sky.addColorStop(0, '#050D1E');
+  sky.addColorStop(.6, '#0D1F3C');
+  sky.addColorStop(1, '#152545');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, h * HORIZON);
+
+  // Stars
+  ctx.fillStyle = 'rgba(255,255,255,.85)';
+  const stars = [[.03,.02],[.08,.06],[.12,.01],[.18,.08],[.23,.03],[.28,.09],
+    [.33,.02],[.38,.07],[.43,.04],[.48,.08],[.53,.01],[.58,.06],
+    [.63,.03],[.68,.08],[.73,.02],[.78,.05],[.83,.07],[.88,.01],
+    [.93,.04],[.98,.06],[.05,.09],[.15,.04],[.25,.07],[.35,.01],
+    [.45,.09],[.55,.03],[.65,.05],[.75,.08],[.85,.02],[.95,.07],
+  ];
+  stars.forEach(([sx, sy]) => {
+    const r = 1 + (sx * sy * 100) % 3;
+    ctx.beginPath();
+    ctx.arc(w * sx, h * sy, r, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  // Moon
+  const mx = w * .82, my = h * .08, mr = 38;
+  const moon = ctx.createRadialGradient(mx, my, mr*.3, mx, my, mr);
+  moon.addColorStop(0, '#FFFEF0');
+  moon.addColorStop(.7, '#FFF8DC');
+  moon.addColorStop(1, 'rgba(255,248,220,0)');
+  ctx.fillStyle = moon;
+  ctx.beginPath();
+  ctx.arc(mx, my, mr, 0, Math.PI*2);
+  ctx.fill();
+
+  // Buildings (darkened)
+  const blds = [
+    [0,.14,.14,'#3A3A3A'], [.11,.1,.18,'#2E2E2E'],
+    [.23,.13,.11,'#3A3A3A'], [.38,.09,.16,'#2E4A2E'],
+    [.49,.12,.12,'#333'], [.63,.1,.2,'#2E2E2E'],
+    [.75,.11,.13,'#3A3A3A'], [.88,.16,.09,'#333'],
+  ];
+  const groundY = h * HORIZON;
+  blds.forEach(([xr, bw, bh, color]) => {
+    const bx = w * xr, bW = w * bw, bH = h * bh, by = groundY - bH;
+    ctx.fillStyle = color;
+    ctx.fillRect(bx, by, bW, bH);
+    // Lit windows
+    const cols = Math.max(1, Math.floor(bW/25));
+    const rows = Math.max(1, Math.floor(bH/18));
+    const ww = bW*.08, wh = bH*.06;
+    const gx = (bW-cols*ww)/(cols+1), gy = (bH-rows*wh)/(rows+1);
+    for (let r = 0; r < rows; r++)
+      for (let c = 0; c < cols; c++) {
+        const lit = ((r*9 + c*13) % 5) < 3;
+        ctx.fillStyle = lit ? `rgba(255,235,150,${.35+((r+c)%3)*.2})` : 'rgba(10,15,25,.3)';
+        ctx.fillRect(bx+gx+c*(ww+gx), by+gy+r*(wh+gy), ww, wh);
+      }
+  });
+
+  // Green strip (dark)
+  ctx.fillStyle = '#2A4020';
+  ctx.fillRect(0, h * ROAD_BOTTOM, w, h * .015);
+
+  // Road
+  const roadTop = h * ROAD_TOP, roadBot = h * ROAD_BOTTOM;
+  const roadGrad = ctx.createLinearGradient(0, roadTop, 0, roadBot);
+  roadGrad.addColorStop(0, '#1A1A1A');
+  roadGrad.addColorStop(1, '#252525');
+  ctx.fillStyle = roadGrad;
+  ctx.beginPath();
+  ctx.moveTo(0, roadBot); ctx.lineTo(w, roadBot);
+  ctx.lineTo(w, roadTop); ctx.lineTo(0, roadTop);
+  ctx.closePath();
+  ctx.fill();
+
+  // Lane markings (dimmed)
+  for (let i = 0; i < 10; i++) {
+    const t = i/10, y1 = roadTop+(roadBot-roadTop)*t, y2 = roadTop+(roadBot-roadTop)*(t+.055);
+    const hW = 6+90*(1-t);
+    ctx.fillStyle = 'rgba(255,255,255,.5)';
+    ctx.fillRect(w/2-hW, y1, hW, y2-y1);
+    ctx.fillRect(w/2, y1, hW, y2-y1);
+  }
+
+  // Zebra (lit by street lamps)
+  const zx = w*.3, zy1 = h*.42, zy2 = h*.68, zcw = w*.4, nStr = 12;
+  for (let i = 0; i < nStr; i++) {
+    const t = i/(nStr-1), bx = zx+t*zcw, sW = zcw/nStr;
+    const topW = sW*(.35+.65*t);
+    ctx.fillStyle = 'rgba(255,255,255,.7)';
+    ctx.beginPath();
+    ctx.moveTo(bx-topW/2,zy1); ctx.lineTo(bx+topW/2,zy1);
+    ctx.lineTo(bx+sW/2,zy2); ctx.lineTo(bx-sW/2,zy2);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Traffic light (green)
+  const tlX = w*.8, tlY = h*.05, tlH = roadBot - h*.05;
+  ctx.fillStyle = '#3A3A3A';
+  ctx.fillRect(tlX-4, tlY, 8, tlH);
+  const boxX = tlX-18, boxY = tlY-45, boxW = 36, boxH = 90;
+  ctx.fillStyle = '#1A1A1A';
+  ctx.beginPath();
+  ctx.roundRect(boxX, boxY, boxW, boxH, 6);
+  ctx.fill();
+  ctx.beginPath(); ctx.arc(tlX, boxY+18, 9, 0, Math.PI*2);
+  ctx.fillStyle = '#3A0A0A'; ctx.fill();
+  ctx.beginPath(); ctx.arc(tlX, boxY+45, 9, 0, Math.PI*2);
+  ctx.fillStyle = '#4A3A0A'; ctx.fill();
+  ctx.beginPath(); ctx.arc(tlX, boxY+72, 9, 0, Math.PI*2);
+  ctx.fillStyle = '#22C55E'; ctx.fill();
+  ctx.shadowColor = 'rgba(34,197,94,.7)'; ctx.shadowBlur = 12; ctx.fill(); ctx.shadowBlur = 0;
+
+  // Street lamps
+  [
+    [.14, roadBot], [.44, roadBot], [.74, roadBot],
+  ].forEach(([lx, ly]) => {
+    const px = w*lx, py = ly;
+    ctx.fillStyle = '#3A3A3A';
+    ctx.fillRect(px-3, py-h*.22, 6, h*.22);
+    ctx.fillStyle = '#4A4A4A';
+    ctx.fillRect(px, py-h*.22-2, 28, 3);
+    const lampX = px+26, lampY = py-h*.22-1;
+    // Lamp glow
+    const glow = ctx.createRadialGradient(lampX, lampY, 2, lampX, lampY, 50);
+    glow.addColorStop(0, 'rgba(255,245,200,.5)');
+    glow.addColorStop(.3, 'rgba(255,240,180,.2)');
+    glow.addColorStop(1, 'rgba(255,235,160,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath(); ctx.arc(lampX, lampY, 50, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#FFF8E0';
+    ctx.beginPath(); ctx.arc(lampX, lampY, 6, 0, Math.PI*2); ctx.fill();
+  });
+
+  // Sidewalk (dark)
+  ctx.fillStyle = '#2A2A2A';
+  ctx.fillRect(0, roadBot, w, h*.04);
+
+  // Below
+  ctx.fillStyle = '#050A14';
+  ctx.fillRect(0, roadBot+h*.04, w, h-roadBot-h*.04);
+}
+
+// ─── Car interior ───
+function drawCarInterior(cvs) {
+  cvs.width = W; cvs.height = H;
+  const ctx = cvs.getContext('2d');
+  const w = W, h = H;
+
+  // Clear with transparency
+  ctx.clearRect(0, 0, w, h);
+
+  // ─── DASHBOARD (bottom ~32%) ───
+  const dashTop = h * .62;
+
+  // Main dash body
+  const dashGrad = ctx.createLinearGradient(0, dashTop, 0, h);
+  dashGrad.addColorStop(0, '#2A2A2A');
+  dashGrad.addColorStop(.15, '#1F1F1F');
+  dashGrad.addColorStop(.5, '#1A1A1A');
+  dashGrad.addColorStop(1, '#0D0D0D');
+  ctx.fillStyle = dashGrad;
+  ctx.fillRect(0, dashTop, w, h - dashTop);
+
+  // Dash top surface (slight highlight edge)
+  ctx.fillStyle = '#3A3A3A';
+  ctx.fillRect(0, dashTop, w, 3);
+
+  // Air vent (left)
+  ctx.fillStyle = '#1A1A1A';
+  ctx.beginPath();
+  ctx.roundRect(w*.12, dashTop + h*.04, w*.08, h*.025, 4);
+  ctx.fill();
+  for (let i = 0; i < 5; i++) {
+    ctx.fillStyle = '#111';
+    ctx.fillRect(w*.125, dashTop + h*.04 + h*.005*i, w*.07, 1.5);
+  }
+
+  // Air vent (center)
+  ctx.fillStyle = '#1A1A1A';
+  ctx.beginPath();
+  ctx.roundRect(w*.4, dashTop + h*.02, w*.15, h*.022, 4);
+  ctx.fill();
+  for (let i = 0; i < 5; i++) {
+    ctx.fillStyle = '#111';
+    ctx.fillRect(w*.405, dashTop + h*.02 + h*.0044*i, w*.14, 1.5);
+  }
+
+  // Screen/infotainment area
+  ctx.fillStyle = '#0F0F0F';
+  ctx.beginPath();
+  ctx.roundRect(w*.56, dashTop + h*.01, w*.12, h*.042, 6);
+  ctx.fill();
+  ctx.fillStyle = '#1A2A1A';
+  ctx.beginPath();
+  ctx.roundRect(w*.565, dashTop + h*.015, w*.11, h*.032, 4);
+  ctx.fill();
+
+  // ─── STEERING WHEEL ───
+  const swX = w * .72, swY = dashTop + h * .08, swR = w * .05;
+  ctx.save();
+  ctx.translate(swX, swY);
+  ctx.rotate(0.15); // slight tilt
+
+  // Wheel outer ring
+  ctx.strokeStyle = '#3D3D3D';
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.arc(0, 0, swR, 0, Math.PI*2);
+  ctx.stroke();
+
+  // Wheel inner ring
+  ctx.strokeStyle = '#2A2A2A';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(0, 0, swR * .75, 0, Math.PI*2);
+  ctx.stroke();
+
+  // Center hub
+  ctx.fillStyle = '#2A2A2A';
+  ctx.beginPath();
+  ctx.arc(0, 0, swR * .3, 0, Math.PI*2);
+  ctx.fill();
+
+  // Spokes
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 2;
+  for (let i = 0; i < 3; i++) {
+    const angle = i * Math.PI * 2 / 3;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(angle) * swR * .35, Math.sin(angle) * swR * .35);
+    ctx.lineTo(Math.cos(angle) * swR, Math.sin(angle) * swR);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+
+  // Speedometer area behind wheel
+  ctx.fillStyle = '#1A1A1A';
+  ctx.beginPath();
+  ctx.arc(w*.72, dashTop + h*.08, w*.055, 0, Math.PI*2);
+  ctx.fill();
+
+  // ─── A-PILLARS (left + right, triangular) ───
+  ctx.fillStyle = '#1A1A1A';
+  // Left A-pillar
+  ctx.beginPath();
+  ctx.moveTo(0, h*.05);
+  ctx.lineTo(w*.06, h*.05);
+  ctx.lineTo(w*.04, dashTop + h*.05);
+  ctx.lineTo(0, dashTop + h*.02);
+  ctx.closePath();
+  ctx.fill();
+  // Highlight edge
+  ctx.fillStyle = '#2A2A2A';
+  ctx.fillRect(0, h*.05, 4, h*.57);
+
+  // Right A-pillar
+  ctx.fillStyle = '#1A1A1A';
+  ctx.beginPath();
+  ctx.moveTo(w, h*.05);
+  ctx.lineTo(w*.94, h*.05);
+  ctx.lineTo(w*.96, dashTop + h*.05);
+  ctx.lineTo(w, dashTop + h*.02);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#2A2A2A';
+  ctx.fillRect(w-4, h*.05, 4, h*.57);
+
+  // ─── ROOF ───
+  const roofGrad = ctx.createLinearGradient(0, 0, 0, h*.06);
+  roofGrad.addColorStop(0, '#0D0D0D');
+  roofGrad.addColorStop(.5, '#1A1A1A');
+  roofGrad.addColorStop(1, '#232323');
+  ctx.fillStyle = roofGrad;
+  ctx.fillRect(w*.06, 0, w*.88, h*.06);
+
+  // Roof inner edge (darker)
+  ctx.fillStyle = '#0F0F0F';
+  ctx.fillRect(w*.07, h*.055, w*.86, h*.008);
+
+  // Sun visors (small dark rectangles at top corners)
+  ctx.fillStyle = '#1A1A1A';
+  ctx.beginPath();
+  ctx.roundRect(w*.07, h*.03, w*.06, h*.022, 3);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.roundRect(w*.87, h*.03, w*.06, h*.022, 3);
+  ctx.fill();
+
+  // ─── REARVIEW MIRROR ───
+  ctx.fillStyle = '#2A2A2A';
+  ctx.beginPath();
+  ctx.roundRect(w*.47, h*.025, w*.06, h*.055, {
+    upperLeft: 3, upperRight: 3, lowerLeft: 6, lowerRight: 6,
+  });
+  ctx.fill();
+
+  // Mirror glass
+  ctx.fillStyle = '#446688';
+  ctx.beginPath();
+  ctx.roundRect(w*.477, h*.032, w*.046, h*.04, {
+    upperLeft: 3, upperRight: 3, lowerLeft: 5, lowerRight: 5,
+  });
+  ctx.fill();
+
+  // Mirror arm
+  ctx.fillStyle = '#1A1A1A';
+  ctx.fillRect(w*.498, h*.015, 3, h*.012);
+
+  // ─── WINDSHIELD TINT (very subtle blue tint on glass) ───
+  ctx.fillStyle = 'rgba(120,160,200,.03)';
+  ctx.fillRect(w*.04, h*.06, w*.92, dashTop - h*.06);
+}
+
+// ─── Render + Download ───
+const scenes = [
+  { id: 'bg_day',   title: 'Day Background',   fn: drawDayScene },
+  { id: 'bg_night', title: 'Night Background', fn: drawNightScene },
+  { id: 'car_interior', title: 'Car Interior', fn: drawCarInterior },
+];
+
+const grid = document.getElementById('grid');
+
+scenes.forEach(scene => {
+  const card = document.createElement('div'); card.className = 'card';
+  const h2 = document.createElement('h2'); h2.textContent = scene.title;
+  const cvs = document.createElement('canvas');
+  cvs.width = W; cvs.height = H;
+  scene.fn(cvs);
+
+  // Scale preview
+  cvs.style.width = '480px';
+  cvs.style.height = '270px';
+
+  const btn = document.createElement('button');
+  btn.textContent = '⬇ Download ' + scene.id + '.png';
+  btn.onclick = () => {
+    const link = document.createElement('a');
+    link.download = scene.id + '.png';
+    link.href = cvs.toDataURL('image/png');
+    link.click();
+  };
+
+  card.append(h2, cvs, btn);
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>

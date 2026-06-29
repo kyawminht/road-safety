@@ -1,10 +1,11 @@
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { HiDocumentText, HiBookOpen, HiPlay } from 'react-icons/hi2';
 
 const tabs = [
-  { to: '/', label: 'စည်းကမ်း', emoji: '📄' },
-  { to: '/learn', label: 'လေ့လာရန်', emoji: '📚' },
-  { to: '/simulator', label: 'ကစားရန်', emoji: '🎮' },
+  { to: '/', label: 'စည်းကမ်း', icon: HiDocumentText },
+  { to: '/learn', label: 'လေ့လာရန်', icon: HiBookOpen },
+  { to: '/simulator', label: 'ကစားရန်', icon: HiPlay },
 ];
 
 export default function BottomNav() {
@@ -29,7 +30,20 @@ export default function BottomNav() {
                   : 'text-gray-400 hover:text-gray-200'
               }`}
             >
-              <span className="text-xl leading-none mb-0.5">{tab.emoji}</span>
+              <motion.div
+                className="relative"
+                animate={isActive ? { scale: [1, 1.2, 1] } : {}}
+                transition={{ duration: 0.3 }}
+              >
+                <tab.icon
+                  className="text-2xl leading-none mb-0.5"
+                  style={{
+                    filter: isActive
+                      ? 'drop-shadow(0 0 8px rgba(20, 184, 166, 0.6))'
+                      : 'none',
+                  }}
+                />
+              </motion.div>
               <span className="text-[10px] font-semibold">{tab.label}</span>
               {isActive && (
                 <motion.div
