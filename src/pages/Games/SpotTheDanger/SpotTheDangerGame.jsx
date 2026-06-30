@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useSpotDanger } from "./useSpotDanger";
+import { useSounds } from "../BeBrightBeSeen/useSounds";
 import { HAZARDS } from "./spotDangerData";
 import "./spotDanger.css";
 
@@ -57,6 +58,7 @@ export default function SpotTheDangerGame({ onNavChange }) {
   }, [canvasSize]);
 
   const { init, handleTap, reset } = useSpotDanger(canvasRef, canvasSize);
+  const { playCorrect, playWrong } = useSounds();
 
   // Start game
   const handleStart = useCallback(() => {
@@ -91,6 +93,7 @@ export default function SpotTheDangerGame({ onNavChange }) {
         const already = foundRef.current.includes(result.type);
         if (!already) {
           foundRef.current.push(result.type);
+          playCorrect();
           const updated = [...foundRef.current];
           // Small delay to see the checkmark appear on canvas
           setTimeout(() => {
@@ -100,10 +103,11 @@ export default function SpotTheDangerGame({ onNavChange }) {
           }, 400);
         }
       } else if (result && !result.correct) {
+        playWrong();
         setWrongTaps((w) => w + 1);
       }
     },
-    [gameState, canvasSize, handleTap, finishGame]
+    [gameState, canvasSize, handleTap, finishGame, playCorrect, playWrong]
   );
 
   const handlePlayAgain = useCallback(() => {
