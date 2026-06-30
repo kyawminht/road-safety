@@ -19,6 +19,14 @@ export default function SimulatorPage() {
       color: 'from-yellow-400 to-orange-500',
       path: '/games/be-bright-be-seen',
     },
+    {
+      id: 'spot-the-danger',
+      title: 'Spot the Danger',
+      subtitle: 'လမ်းပေါ်က အန္တရာယ်တွေကို ရှာဖွေပါ',
+      emoji: '🔍',
+      color: 'from-red-400 to-rose-600',
+      path: '/games/spot-the-danger',
+    },
   ];
 
   return (
