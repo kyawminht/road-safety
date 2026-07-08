@@ -13,40 +13,48 @@ export default function QuestionModal({
           <motion.div
             key="question"
             className="game-modal-card"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
+            <div className="modal-quiz-icon">❓</div>
             <div className="modal-question-badge">Quiz</div>
             <p className="modal-question">{question}</p>
             <div className="modal-btn-group">
-              <button
+              <motion.button
                 className="modal-btn modal-btn-yes"
                 onClick={() => onAnswer("yes")}
+                whileTap={{ scale: 0.93 }}
               >
                 Yes
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 className="modal-btn modal-btn-no"
                 onClick={() => onAnswer("no")}
+                whileTap={{ scale: 0.93 }}
               >
                 No
-              </button>
+              </motion.button>
             </div>
           </motion.div>
         ) : (
           <motion.div
             key="feedback"
             className={`feedback-card ${isCorrect ? "correct" : "wrong"}`}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="feedback-icon-ring">
+            <motion.div
+              className="feedback-icon-ring"
+              initial={{ scale: 0, rotate: -20 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.1, type: "spring", stiffness: 300, damping: 15 }}
+            >
               {isCorrect ? "✓" : "✕"}
-            </div>
+            </motion.div>
             <p className="feedback-text">{feedback}</p>
           </motion.div>
         )}

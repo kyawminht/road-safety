@@ -1,0 +1,327 @@
+.pedestrian-first-container {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: #0A1628;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ── Background scene image ── */
+/* Positioned and sized via inline styles from contain-rect math */
+.pf-scene-image {
+  display: block;
+}
+
+/* ── Shared overlay (centered) ── */
+.pf-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: rgba(10, 22, 40, 0.9);
+  backdrop-filter: blur(6px);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pf-overlay-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pf-overlay h1 {
+  font-family: "Noto Sans Myanmar", sans-serif;
+  font-size: clamp(18px, 5vw, 28px);
+  font-weight: 800;
+  color: #FFD700;
+  text-align: center;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.pf-subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(20px, 5.5vw, 32px);
+  font-weight: 800;
+  color: #FFFFFF;
+  text-align: center;
+  margin-bottom: 14px;
+  letter-spacing: -0.3px;
+}
+
+.pf-description {
+  font-family: "Noto Sans Myanmar", sans-serif;
+  font-size: 13px;
+  color: #CBD5E1;
+  text-align: center;
+  max-width: 300px;
+  line-height: 1.7;
+  margin-bottom: 22px;
+}
+
+/* ── Buttons ── */
+.pf-btn {
+  font-family: "Noto Sans Myanmar", sans-serif;
+  font-size: clamp(15px, 4vw, 19px);
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 42px;
+  min-height: 50px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pf-btn-primary {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #1E293B;
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+.pf-btn-secondary {
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: clamp(13px, 3.5vw, 16px);
+  padding: 12px 24px;
+  min-height: 42px;
+}
+
+.pf-end-btn-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pf-score {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(32px, 9vw, 52px);
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 14px;
+}
+
+/* ── Scenario summary ── */
+.pf-scenario-summary {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.pf-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-family: "Noto Sans Myanmar", sans-serif;
+  color: #E2E8F0;
+}
+
+.pf-summary-item.correct {
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.pf-summary-item.wrong {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.pf-summary-emoji { font-size: 16px; }
+.pf-summary-label { font-size: 12px; }
+.pf-summary-mark { font-weight: 800; font-size: 15px; }
+
+/* ── Question modal ── */
+.pf-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+  background: rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+}
+
+.pf-modal-card {
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  border-radius: 20px;
+  padding: 24px 20px 20px;
+  width: min(100%, 300px);
+  text-align: center;
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.pf-modal-quiz-icon {
+  font-size: 32px;
+  margin-bottom: 6px;
+}
+
+.pf-question-badge {
+  font-family: "Noto Sans Myanmar", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #A78BFA;
+  background: rgba(99, 102, 241, 0.15);
+  padding: 4px 12px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.pf-question-text {
+  font-family: "Noto Sans Myanmar", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #F1F5F9;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.pf-btn-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.pf-answer-btn {
+  font-family: "Noto Sans Myanmar", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 0;
+  min-height: 48px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  min-width: 80px;
+  flex: 1;
+  max-width: 120px;
+  transition: box-shadow 0.15s;
+}
+
+.pf-btn-yes {
+  background: #22C55E;
+  color: #FFF;
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4);
+}
+
+.pf-btn-yes:active {
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+.pf-btn-no {
+  background: #EF4444;
+  color: #FFF;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+}
+
+.pf-btn-no:active {
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* ── Feedback card ── */
+.pf-feedback-card {
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  border-radius: 20px;
+  padding: 24px 20px 20px;
+  width: min(100%, 300px);
+  text-align: center;
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.pf-feedback-card.correct {
+  border: 2px solid #22C55E;
+  background: linear-gradient(135deg, #064E3B 0%, #0F172A 100%);
+}
+
+.pf-feedback-card.wrong {
+  border: 2px solid #EF4444;
+  background: linear-gradient(135deg, #7F1D1D 0%, #0F172A 100%);
+}
+
+.pf-feedback-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 900;
+  margin: 0 auto 10px;
+}
+
+.pf-feedback-card.correct .pf-feedback-icon {
+  background: #22C55E;
+  color: #FFF;
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
+}
+
+.pf-feedback-card.wrong .pf-feedback-icon {
+  background: #EF4444;
+  color: #FFF;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+}
+
+.pf-feedback-text {
+  font-family: "Noto Sans Myanmar", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #F1F5F9;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.pf-feedback-tap-hint {
+  font-family: "Noto Sans Myanmar", sans-serif;
+  font-size: 11px;
+  color: #94A3B8;
+  margin: 10px 0 0;
+  animation: pf-pulse-hint 2s ease-in-out infinite;
+}
+
+@keyframes pf-pulse-hint {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ── Character image ── */
+/* Positioned via inline styles (pixel coords from rAF, like BeBrightBeSeen) */
+.pf-char-image {
+  pointer-events: none;
+  image-rendering: auto;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+}
+
+/* ── Police character ── */
+.pf-police-image {
+  height: 12vh;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 16px rgba(239, 68, 68, 0.5));
+}
+
+@media (max-width: 480px) {
+  .pf-police-image {
+    height: 9vh;
+  }
+}

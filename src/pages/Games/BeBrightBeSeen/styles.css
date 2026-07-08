@@ -22,7 +22,7 @@
   height: 100%;
 }
 
-/* Modal — full overlay, card floats at bottom */
+/* Modal — full overlay, card at bottom */
 .game-modal-backdrop {
   position: absolute;
   inset: 0;
@@ -36,127 +36,136 @@
   pointer-events: auto;
 }
 
-/* ── Question modal (compact) ── */
+/* ── Question modal ── */
 .game-modal-card {
-  background: rgba(255, 255, 255, 0.97);
-  backdrop-filter: blur(12px);
-  border-radius: 14px;
-  padding: 14px 14px 12px;
-  width: min(100%, 260px);
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  border-radius: 20px;
+  padding: 24px 20px 20px;
+  width: min(100%, 300px);
   text-align: center;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.20), 0 0 0 1px rgba(255, 255, 255, 0.25);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.modal-quiz-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
 }
 
 .modal-question-badge {
   display: inline-block;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 9px;
+  font-family: "Noto Sans Myanmar", sans-serif;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6366F1;
-  background: #EEF2FF;
-  padding: 2px 8px;
+  color: #A78BFA;
+  background: rgba(99, 102, 241, 0.15);
+  padding: 4px 12px;
   border-radius: 99px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .modal-question {
   font-family: "Noto Sans Myanmar", sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
-  color: #1E293B;
-  margin: 0 0 12px;
-  line-height: 1.4;
+  color: #F1F5F9;
+  margin: 0 0 16px;
+  line-height: 1.5;
 }
 
 .modal-btn-group {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   justify-content: center;
 }
 
 .modal-btn {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 14px;
+  font-family: "Noto Sans Myanmar", sans-serif;
+  font-size: 15px;
   font-weight: 700;
-  padding: 8px 0;
+  padding: 12px 0;
   border-radius: 12px;
   border: none;
   cursor: pointer;
   flex: 1;
-  max-width: 100px;
-  min-height: 38px;
-  transition: transform 0.12s, box-shadow 0.12s;
+  max-width: 120px;
+  min-height: 48px;
+  transition: box-shadow 0.15s;
   -webkit-tap-highlight-color: transparent;
-}
-
-.modal-btn:active {
-  transform: scale(0.94);
 }
 
 .modal-btn-yes {
   background: #22C55E;
   color: #FFFFFF;
-  box-shadow: 0 3px 10px rgba(34, 197, 94, 0.35);
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4);
+}
+
+.modal-btn-yes:active {
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
 }
 
 .modal-btn-no {
   background: #EF4444;
   color: #FFFFFF;
-  box-shadow: 0 3px 10px rgba(239, 68, 68, 0.35);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
 }
 
-/* ── Feedback card (compact) ── */
+.modal-btn-no:active {
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* ── Feedback card ── */
 .feedback-card {
-  background: rgba(255, 255, 255, 0.97);
-  backdrop-filter: blur(12px);
-  border-radius: 14px;
-  padding: 14px 14px 12px;
-  width: min(100%, 260px);
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  border-radius: 20px;
+  padding: 24px 20px 20px;
+  width: min(100%, 300px);
   text-align: center;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.20);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
 }
 
 .feedback-card.correct {
   border: 2px solid #22C55E;
-  background: #F0FDF4;
+  background: linear-gradient(135deg, #064E3B 0%, #0F172A 100%);
 }
 
 .feedback-card.wrong {
   border: 2px solid #EF4444;
-  background: #FEF2F2;
+  background: linear-gradient(135deg, #7F1D1D 0%, #0F172A 100%);
 }
 
 .feedback-icon-ring {
-  width: 34px;
-  height: 34px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 17px;
+  font-size: 22px;
   font-weight: 800;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .feedback-card.correct .feedback-icon-ring {
   background: #22C55E;
   color: #FFFFFF;
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
 }
 
 .feedback-card.wrong .feedback-icon-ring {
   background: #EF4444;
   color: #FFFFFF;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
 }
 
 .feedback-card .feedback-text {
   font-family: "Noto Sans Myanmar", sans-serif;
   font-size: 13px;
   font-weight: 600;
-  line-height: 1.4;
-  color: #1E293B;
+  line-height: 1.5;
+  color: #F1F5F9;
   margin: 0;
 }
 

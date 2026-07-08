@@ -147,6 +147,19 @@ function wrongBuzz() {
   osc.stop(now + 0.25);
 }
 
+// ── HTML5 Audio player (more format-compatible than decodeAudioData) ──
+const audioInstances = {};
+
+function playHtml5Audio(url) {
+  if (!audioInstances[url]) {
+    audioInstances[url] = new Audio(url);
+    audioInstances[url].preload = "auto";
+  }
+  const audio = audioInstances[url];
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
+}
+
 // ── Hook ──
 
 export function useSounds() {
@@ -195,6 +208,10 @@ export function useSounds() {
     wrongBuzz();
   }, []);
 
+  const playPoliceSiren = useCallback(() => {
+    playHtml5Audio("/Audio/police.wav");
+  }, []);
+
   useEffect(() => {
     return () => {
       walkingRef.current = false;
@@ -209,5 +226,6 @@ export function useSounds() {
     playIntro,
     playCorrect,
     playWrong,
+    playPoliceSiren,
   };
 }

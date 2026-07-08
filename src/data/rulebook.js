@@ -72,7 +72,7 @@ export const RULES = [
   { category: 'walking', ageGroup: 'g3-g5', image: between, text: 'ကားရပ်ထားတဲ့ကြားထဲက ဘယ်တော့မှ မထွက်ရ' },
   { category: 'walking', ageGroup: 'g3-g5', image: using_phone, text: 'လမ်းလျှောက်ရင်း ဖုန်းမကြည့်ရ၊ နားကြပ်မတပ်ရ' },
   // ── Walking / G6+ ──
-  { category: 'walking', ageGroup: 'g6-plus', image: night_bright, text: 'ညအချိန်လမ်းလျှောက်ရင် အရောင်ဖျော့တဲ့အင်္ကျီ ဝတ်ပါ' },
+  { category: 'walking', ageGroup: 'g6-plus', image: night_bright, text: 'ညအချိန်လမ်းလျှောက်ရင် အရောင်တောက်တဲ့အင်္ကျီ ဝတ်ပါ' },
   { category: 'walking', ageGroup: 'g6-plus', image: umbrella, text: 'မိုးရွာစဉ် ထီးကို အပေါ်မြှင့်ဆောင်းပါ၊ ရှေ့ကို ရှင်းရှင်းမြင်ရပါစေ' },
 
   // ── Bicycle / KG-G2 ──

@@ -7,6 +7,7 @@ import LearnPage from './pages/LearnPage.jsx';
 import SimulatorPage from './pages/SimulatorPage.jsx';
 import BeBrightBeSeenGame from './pages/Games/BeBrightBeSeen/BeBrightBeSeenGame.jsx';
 import SpotTheDangerGame from './pages/Games/SpotTheDanger/SpotTheDangerGame.jsx';
+import PedestrianFirstGame from './pages/Games/PedestrianFirst/PedestrianFirstGame.jsx';
 
 export default function App() {
   const [showNav, setShowNav] = useState(true);
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/simulator" element={<SimulatorPage />} />
           <Route path="/games/be-bright-be-seen" element={<BeBrightBeSeenGame onNavChange={setShowNav} />} />
           <Route path="/games/spot-the-danger" element={<SpotTheDangerGame onNavChange={setShowNav} />} />
+          <Route path="/games/pedestrian-first" element={<PedestrianFirstGame onNavChange={setShowNav} />} />
         </Routes>
         <motion.div
           initial={false}

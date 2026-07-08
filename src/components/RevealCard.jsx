@@ -94,6 +94,18 @@ export default function RevealCard({ card, cardIndex, totalCards, onNextCard }) 
           {isRevealed ? card.shortRule : card.frontVisual}
         </p>
 
+        {/* ── Tap hint — waving hand + label ── */}
+        {!isRevealed && (
+          <div className="flex flex-col items-center gap-1.5 mb-4 tap-hint-fade">
+            <span className="tap-hint-wave text-3xl" role="img" aria-label="tap to flip">
+              👆
+            </span>
+            <span className="text-xs text-white/60 font-medium tracking-wide tap-hint-pulse">
+              နှိပ်ပါ
+            </span>
+          </div>
+        )}
+
         {/* ── Primary flip button ── */}
         <motion.button
           onClick={(e) => { e.stopPropagation(); handleToggle(); }}

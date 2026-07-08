@@ -17,7 +17,7 @@ export default function EndScreen({ score, answers, onPlayAgain, onBack, onAppla
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {perfect ? "🎉 အံ့မခန်း! 🎉" : "🏁 ပြီးဆုံးပါပြီ 🏁"}
+        {perfect ? "🎉 အားလုံး မှန်ပါတယ် 🎉" : "🏁 ပြီးဆုံးပါပြီ 🏁"}
       </motion.h2>
 
       <motion.div

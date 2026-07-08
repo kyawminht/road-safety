@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { RULES, AGE_GROUPS, CATEGORIES } from '../data/rulebook.js';
+import { RULES, CATEGORIES } from '../data/rulebook.js';
 import { trackEvent } from '../utils/mixpanel.js';
 
 const sectionVariant = {
@@ -9,9 +9,8 @@ const sectionVariant = {
 };
 
 export default function RulesPage({ onScrollChange }) {
-  const [activeAge, setActiveAge] = useState('all');
-  const chipRefs = useRef([]);
   const [showHeader, setShowHeader] = useState(true);
+  const headerVisibleRef = useRef(true);
   const lastScrollY = useRef(0);
   const scrollContainerRef = useRef(null);
 
@@ -19,12 +18,7 @@ export default function RulesPage({ onScrollChange }) {
     trackEvent('Rules Page Opened');
   }, []);
 
-  useEffect(() => {
-    const idx = AGE_GROUPS.findIndex((g) => g.id === activeAge);
-    chipRefs.current[idx]?.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-  }, [activeAge]);
-
-  // Scroll handler to hide/show header
+  // Scroll handler to hide/show header — uses ref to avoid re-registering listener
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -33,13 +27,15 @@ export default function RulesPage({ onScrollChange }) {
       const currentScrollY = container.scrollTop;
       const diff = currentScrollY - lastScrollY.current;
 
-      // Hide header when scrolling down past 50px, show when scrolling up
+      // Hide header when scrolling down past 80px, show when scrolling up
       let shouldShow = true;
-      if (currentScrollY > 50) {
+      if (currentScrollY > 80) {
         shouldShow = diff < 0;
       }
 
-      if (shouldShow !== showHeader) {
+      // Only update if actually changed — prevents flicker
+      if (shouldShow !== headerVisibleRef.current) {
+        headerVisibleRef.current = shouldShow;
         setShowHeader(shouldShow);
         onScrollChange?.(shouldShow);
       }
@@ -49,21 +45,16 @@ export default function RulesPage({ onScrollChange }) {
 
     container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
-  }, [showHeader, onScrollChange]);
-
-  const filteredRules = useMemo(() => {
-    if (activeAge === 'all') return RULES;
-    return RULES.filter((r) => r.ageGroup === activeAge);
-  }, [activeAge]);
+  }, [onScrollChange]);
 
   const grouped = useMemo(() => {
     return CATEGORIES
       .map((cat) => ({
         ...cat,
-        rules: filteredRules.filter((r) => r.category === cat.id),
+        rules: RULES.filter((r) => r.category === cat.id),
       }))
       .filter((g) => g.rules.length > 0);
-  }, [filteredRules]);
+  }, []);
 
   return (
     <div className="flex-1 overflow-hidden flex flex-col bg-white">
@@ -79,49 +70,20 @@ export default function RulesPage({ onScrollChange }) {
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className="overflow-hidden shrink-0"
       >
-        <div className="relative bg-[#0D9488] overflow-hidden p-8">
+        <div className="relative bg-[#0D9488] overflow-hidden px-6 py-5">
           {/* Decorative shapes */}
           <div className="absolute -right-8 -top-10 w-28 h-28 rounded-full bg-white/10 pointer-events-none" />
           <div className="absolute right-10 top-4 w-10 h-10 rounded-full bg-white/8 pointer-events-none" />
           <div className="absolute -left-6 -bottom-8 w-24 h-24 rounded-full bg-white/10 pointer-events-none" />
           <div className="absolute left-12 bottom-2 w-6 h-6 rounded-full bg-white/6 pointer-events-none" />
 
-          <div className="relative z-10 !p-4">
-            <p className="text-white mt-2 font-bold">
-              ကလေးများအတွက် လမ်းအန္တရာယ်ကင်းရှင်းရေး လမ်းညွှန်
+          <div className="relative z-10 text-center">
+            <h1 className="text-lg font-extrabold text-white leading-snug">
+              လမ်းအန္တရာယ်ကင်းရှင်းရေး
+            </h1>
+            <p className="text-white/70 text-xs font-medium mt-1">
+              ကလေးများအတွက် လမ်းညွှန်
             </p>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* ═══════════════════════════════════════════
-          FILTER BAR
-          ═══════════════════════════════════════════ */}
-      <motion.div
-        initial={false}
-        animate={{
-          height: showHeader ? 'auto' : 0,
-          opacity: showHeader ? 1 : 0,
-        }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
-        className="overflow-hidden shrink-0"
-      >
-        <div className="bg-white border-b border-gray-100 px-5 pt-4 pb-3.5 !my-4">
-          <div className="flex gap-3 overflow-x-auto scrollbar-none">
-            {AGE_GROUPS.map((group, idx) => (
-              <button
-                key={group.id}
-                ref={(el) => { chipRefs.current[idx] = el; }}
-                onClick={() => setActiveAge(group.id)}
-                className={`shrink-0 px-5 !p-2 py-2.5 rounded-full text-sm font-bold transition-all border-2 ${
-                  activeAge === group.id
-                    ? 'bg-[#0D9488] text-white border-[#0D9488]'
-                    : 'bg-white text-gray-400 border-gray-200 hover:border-gray-300 hover:text-gray-500'
-                }`}
-              >
-                {group.label}
-              </button>
-            ))}
           </div>
         </div>
       </motion.div>

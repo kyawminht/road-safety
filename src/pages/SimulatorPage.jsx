@@ -27,6 +27,14 @@ export default function SimulatorPage() {
       color: 'from-red-400 to-rose-600',
       path: '/games/spot-the-danger',
     },
+    {
+      id: 'pedestrian-first',
+      title: 'Pedestrian First',
+      subtitle: 'လူသွားသူကို ဦးစားပေးပါ',
+      emoji: '🚶‍♂️',
+      color: 'from-green-400 to-teal-600',
+      path: '/games/pedestrian-first',
+    },
   ];
 
   return (
@@ -35,16 +43,15 @@ export default function SimulatorPage() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="text-center mb-8"
+        className="text-center mb-10"
       >
-        <span className="text-4xl block mb-3">🎮</span>
-        <h1 className="text-2xl font-bold text-[#1E293B] mb-2">စမ်းသပ်ကစားရန်</h1>
+        <h1 className="text-2xl font-bold text-[#1E293B] mb-2">ကစားနည်းများ</h1>
         <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">
-          လမ်းစည်းကမ်းများကို အပြန်အလှန် ကစားရင်း လေ့လာနိုင်ပါမည်
+          လမ်းစည်းကမ်းများကို အပြန်အလှန် ကစားရင်း လေ့လာပါ
         </p>
       </motion.div>
 
-      <div className="max-w-md mx-auto space-y-4">
+      <div className="max-w-sm mx-auto flex flex-col" style={{ gap: '20px' }}>
         {games.map((game, index) => (
           <motion.button
             key={game.id}
@@ -53,14 +60,11 @@ export default function SimulatorPage() {
             transition={{ duration: 0.4, delay: index * 0.1 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => navigate(game.path)}
-            className={`w-full bg-gradient-to-r ${game.color} rounded-2xl p-5 text-left shadow-lg active:shadow-md transition-shadow`}
+            className={`w-full bg-gradient-to-r ${game.color} rounded-xl py-5 px-6 text-center shadow-md hover:shadow-lg active:shadow transition-all duration-200`}
           >
-            <div className="flex items-center gap-4">
-              <span className="text-4xl">{game.emoji}</span>
-              <div>
-                <h2 className="text-lg font-bold text-white">{game.title}</h2>
-                <p className="text-white/80 text-sm">{game.subtitle}</p>
-              </div>
+            <div className="flex flex-col items-center gap-1.5">
+              <h2 className="text-lg font-bold text-white">{game.title}</h2>
+              <p className="text-white/80 text-sm">{game.subtitle}</p>
             </div>
           </motion.button>
         ))}
