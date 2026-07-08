@@ -85,10 +85,4 @@ A mobile-first learning app that teaches road safety to Myanmar children (ages 6
 
 ## License
 
-This project is for **educational purposes only**.
-
-- **Teachers** — You are free to use this app in your classroom. No permission needed.
-- **Students** — Learn from it, share it, and stay safe on the roads.
-- **Not for sale** — You may not sell this software, its content, or any derivative work.
-
-For other uses, please contact the author.
+This project is licensed under the [MIT License](LICENSE).
