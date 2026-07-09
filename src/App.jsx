@@ -1,9 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { AuthProvider } from './hooks/useAuth.jsx';
 import BottomNav from './components/BottomNav.jsx';
 import RulesPage from './pages/RulesPage.jsx';
-import LearnPage from './pages/LearnPage.jsx';
+import TeachPage from './pages/TeachPage.jsx';
+import CommentsPage from './pages/CommentsPage.jsx';
 import SimulatorPage from './pages/SimulatorPage.jsx';
 import BeBrightBeSeenGame from './pages/Games/BeBrightBeSeen/BeBrightBeSeenGame.jsx';
 import SpotTheDangerGame from './pages/Games/SpotTheDanger/SpotTheDangerGame.jsx';
@@ -13,28 +15,31 @@ export default function App() {
   const [showNav, setShowNav] = useState(true);
 
   return (
-    <BrowserRouter>
-      <div className="h-dvh flex flex-col overflow-hidden">
-        <Routes>
-          <Route path="/" element={<RulesPage onScrollChange={setShowNav} />} />
-          <Route path="/learn" element={<LearnPage />} />
-          <Route path="/simulator" element={<SimulatorPage />} />
-          <Route path="/games/be-bright-be-seen" element={<BeBrightBeSeenGame onNavChange={setShowNav} />} />
-          <Route path="/games/spot-the-danger" element={<SpotTheDangerGame onNavChange={setShowNav} />} />
-          <Route path="/games/pedestrian-first" element={<PedestrianFirstGame onNavChange={setShowNav} />} />
-        </Routes>
-        <motion.div
-          initial={false}
-          animate={{
-            height: showNav ? 'auto' : 0,
-            opacity: showNav ? 1 : 0,
-          }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className="overflow-hidden"
-        >
-          <BottomNav />
-        </motion.div>
-      </div>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="h-dvh flex flex-col overflow-hidden">
+          <Routes>
+            <Route path="/" element={<RulesPage />} />
+            <Route path="/learn" element={<TeachPage />} />
+            <Route path="/comments" element={<CommentsPage />} />
+            <Route path="/simulator" element={<SimulatorPage />} />
+            <Route path="/games/be-bright-be-seen" element={<BeBrightBeSeenGame onNavChange={setShowNav} />} />
+            <Route path="/games/spot-the-danger" element={<SpotTheDangerGame onNavChange={setShowNav} />} />
+            <Route path="/games/pedestrian-first" element={<PedestrianFirstGame onNavChange={setShowNav} />} />
+          </Routes>
+          <motion.div
+            initial={false}
+            animate={{
+              height: showNav ? 'auto' : 0,
+              opacity: showNav ? 1 : 0,
+            }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <BottomNav />
+          </motion.div>
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
