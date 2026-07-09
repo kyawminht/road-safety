@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth.jsx';
 import CommentItem from '../components/CommentItem.jsx';
 import CommentInput from '../components/CommentInput.jsx';
 import AuthPrompt from '../components/AuthPrompt.jsx';
+import CreatorSection from '../components/CreatorSection.jsx';
 
 const PAGE_SIZE = 20;
 
@@ -137,7 +138,7 @@ export default function CommentsPage() {
             💬 မှတ်ချက်များ
           </h1>
           <p className="text-white/70 text-xs font-medium mt-1">
-            သင့်အတွေ့အကြုံကို မျှဝေပါ
+            Creator နဲ့ အခြား user တွေကို ဘာပြောချင်လဲ
           </p>
         </div>
       </div>
@@ -190,6 +191,9 @@ export default function CommentsPage() {
             </AnimatePresence>
           </div>
         )}
+
+        {/* Creator section at bottom */}
+        <CreatorSection />
       </div>
 
       {/* Auth prompt */}

@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HiCheckCircle, HiArrowRight, HiArrowLeft } from 'react-icons/hi2';
 import RevealCard from '../components/RevealCard.jsx';
 import LikeButton from '../components/LikeButton.jsx';
-import CreatorSection from '../components/CreatorSection.jsx';
 import { TOPICS, getCardsForTopic, getRulesForTopic } from '../data/topics.js';
 import { useProgress } from '../hooks/useProgress.js';
 import { useAuth } from '../hooks/useAuth.jsx';
@@ -231,7 +230,6 @@ export default function HomePage() {
                 })}
               </div>
             </div>
-            <CreatorSection />
           </motion.div>
         )}
 

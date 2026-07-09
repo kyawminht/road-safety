@@ -31,7 +31,7 @@ export default function CommentInput({ onSubmit, disabled }) {
             handleSubmit();
           }
         }}
-        placeholder="မှတ်ချက်ရေးပါ..."
+        placeholder="အကြံပြုလိုရပါတယ်..."
         disabled={disabled}
         rows={1}
         className="flex-1 bg-white/5 rounded-xl px-4 py-2.5 text-sm text-white/90 placeholder:text-white/25
