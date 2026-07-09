@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth.jsx';
 import CommentItem from '../components/CommentItem.jsx';
 import CommentInput from '../components/CommentInput.jsx';
 import AuthPrompt from '../components/AuthPrompt.jsx';
+import { checkProfanity } from '../utils/profanityFilter.js';
 
 const PAGE_SIZE = 20;
 
@@ -15,6 +16,7 @@ export default function CommentsPage() {
   const [posting, setPosting] = useState(false);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [error, setError] = useState(null);
+  const [profanityWarning, setProfanityWarning] = useState(null);
 
   // Fetch comments
   const fetchComments = useCallback(async () => {
@@ -68,6 +70,14 @@ export default function CommentsPage() {
       return;
     }
     if (!isSupabaseConfigured()) return;
+
+    // Profanity check
+    const { clean } = checkProfanity(text);
+    if (!clean) {
+      setProfanityWarning('⚠️ သင့်မှတ်ချက်တွင် ခွင့်မပြုသည့် စကားလုံးများ ပါဝင်နေပါသည်။ ကျေးဇူးပြု၍ ရှောင်ပါ။');
+      setTimeout(() => setProfanityWarning(null), 3000);
+      return;
+    }
 
     setPosting(true);
     const { data, error: postErr } = await supabase
@@ -146,6 +156,20 @@ export default function CommentsPage() {
       <div className="shrink-0">
         <CommentInput onSubmit={handlePost} disabled={posting} />
       </div>
+
+      {/* Profanity warning */}
+      <AnimatePresence>
+        {profanityWarning && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="mx-5 mb-2 px-4 py-2.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-sm font-medium shrink-0"
+          >
+            {profanityWarning}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Comments list */}
       <div className="flex-1 overflow-y-auto">

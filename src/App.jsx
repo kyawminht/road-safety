@@ -17,7 +17,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="h-dvh flex flex-col overflow-y-auto">
+        <div className="h-dvh flex flex-col overflow-hidden bg-[#0F1A2E]">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/comments" element={<CommentsPage />} />
