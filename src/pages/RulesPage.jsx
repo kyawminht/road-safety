@@ -4,6 +4,7 @@ import { HiArrowRight, HiArrowLeft } from 'react-icons/hi2';
 import { RULES, CATEGORIES } from '../data/rulebook.js';
 import { useProgress } from '../hooks/useProgress.js';
 import { useAuth } from '../hooks/useAuth.jsx';
+import CreatorSection from '../components/CreatorSection.jsx';
 import { trackEvent } from '../utils/mixpanel.js';
 
 const CATEGORY_ICONS = {
@@ -193,6 +194,9 @@ export default function RulesPage() {
                 );
               })}
             </div>
+
+            {/* Creator section at bottom */}
+            <CreatorSection />
           </motion.div>
         )}
 
