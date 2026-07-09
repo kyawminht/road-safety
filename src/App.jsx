@@ -3,8 +3,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AuthProvider } from './hooks/useAuth.jsx';
 import BottomNav from './components/BottomNav.jsx';
-import RulesPage from './pages/RulesPage.jsx';
-import TeachPage from './pages/TeachPage.jsx';
+import HomePage from './pages/HomePage.jsx';
 import CommentsPage from './pages/CommentsPage.jsx';
 import SimulatorPage from './pages/SimulatorPage.jsx';
 import BeBrightBeSeenGame from './pages/Games/BeBrightBeSeen/BeBrightBeSeenGame.jsx';
@@ -19,8 +18,7 @@ export default function App() {
       <BrowserRouter>
         <div className="h-dvh flex flex-col overflow-hidden">
           <Routes>
-            <Route path="/" element={<RulesPage />} />
-            <Route path="/learn" element={<TeachPage />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/comments" element={<CommentsPage />} />
             <Route path="/simulator" element={<SimulatorPage />} />
             <Route path="/games/be-bright-be-seen" element={<BeBrightBeSeenGame onNavChange={setShowNav} />} />

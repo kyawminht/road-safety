@@ -1,10 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { HiDocumentText, HiBookOpen, HiChatBubbleLeftRight, HiPlay } from 'react-icons/hi2';
+import { HiDocumentText, HiChatBubbleLeftRight, HiPlay } from 'react-icons/hi2';
 
 const tabs = [
   { to: '/', label: 'စည်းကမ်း', icon: HiDocumentText },
-  { to: '/learn', label: 'သင်ကြားရန်', icon: HiBookOpen },
   { to: '/comments', label: 'မှတ်ချက်', icon: HiChatBubbleLeftRight },
   { to: '/simulator', label: 'ကစားရန်', icon: HiPlay },
 ];
