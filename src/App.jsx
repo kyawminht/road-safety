@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AuthProvider } from './hooks/useAuth.jsx';
 import BottomNav from './components/BottomNav.jsx';
+import CreatorSection from './components/CreatorSection.jsx';
 import HomePage from './pages/HomePage.jsx';
 import CommentsPage from './pages/CommentsPage.jsx';
 import SimulatorPage from './pages/SimulatorPage.jsx';
@@ -16,7 +17,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="h-dvh flex flex-col overflow-hidden">
+        <div className="h-dvh flex flex-col overflow-y-auto">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/comments" element={<CommentsPage />} />
@@ -25,6 +26,11 @@ export default function App() {
             <Route path="/games/spot-the-danger" element={<SpotTheDangerGame onNavChange={setShowNav} />} />
             <Route path="/games/pedestrian-first" element={<PedestrianFirstGame onNavChange={setShowNav} />} />
           </Routes>
+
+          {/* Creator footer — always visible above nav */}
+          <div className="shrink-0">
+            <CreatorSection />
+          </div>
           <motion.div
             initial={false}
             animate={{

@@ -5,7 +5,6 @@ import { useAuth } from '../hooks/useAuth.jsx';
 import CommentItem from '../components/CommentItem.jsx';
 import CommentInput from '../components/CommentInput.jsx';
 import AuthPrompt from '../components/AuthPrompt.jsx';
-import CreatorSection from '../components/CreatorSection.jsx';
 
 const PAGE_SIZE = 20;
 
@@ -191,9 +190,6 @@ export default function CommentsPage() {
             </AnimatePresence>
           </div>
         )}
-
-        {/* Creator section at bottom */}
-        <CreatorSection />
       </div>
 
       {/* Auth prompt */}
