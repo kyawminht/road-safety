@@ -1,7 +1,9 @@
 // ── Unified Topics ──
 // Merges rulebook categories + teach topics + flip cards into one structure.
 import { FLIP_CARDS } from './flipCards.js';
-import { RULES } from './rulebook.js';
+import { RULES, AGE_GROUPS } from './rulebook.js';
+
+export { AGE_GROUPS };
 
 export const TOPICS = [
   {
@@ -95,9 +97,13 @@ export function getCardsForTopic(topicId) {
     .filter(Boolean);
 }
 
-/** Get rules for a topic (from rulebook, filtered by category) */
-export function getRulesForTopic(topicId) {
+/** Get rules for a topic (from rulebook, filtered by category + optional age group) */
+export function getRulesForTopic(topicId, ageGroup = 'all') {
   const topic = TOPICS.find((t) => t.id === topicId);
   if (!topic?.ruleCategory) return [];
-  return RULES.filter((r) => r.category === topic.ruleCategory);
+  let rules = RULES.filter((r) => r.category === topic.ruleCategory);
+  if (ageGroup && ageGroup !== 'all') {
+    rules = rules.filter((r) => r.ageGroup === ageGroup);
+  }
+  return rules;
 }
