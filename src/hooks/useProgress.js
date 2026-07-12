@@ -7,6 +7,7 @@ const INITIAL_PROGRESS = {
   completedTopics: [],
   viewedRules: [],
   quizScores: {},
+  completedLessons: [],
   lastSyncedAt: null,
 };
 
@@ -34,6 +35,7 @@ function mergeProgress(local, remote) {
   merged.completedTopics = [...new Set([...local.completedTopics, ...remote.completedTopics])];
   merged.viewedRules = [...new Set([...local.viewedRules, ...remote.viewedRules])];
   merged.quizScores = { ...remote.quizScores, ...local.quizScores };
+  merged.completedLessons = [...new Set([...(local.completedLessons || []), ...(remote.completedLessons || [])])];
   // Keep whichever timestamp is newer
   merged.lastSyncedAt = [local.lastSyncedAt, remote.lastSyncedAt]
     .filter(Boolean)
@@ -101,6 +103,18 @@ export function useProgress(userId) {
     }));
   }, []);
 
+  // ── Curriculum lessons ──
+  const completeLesson = useCallback((lessonId) => {
+    setProgress((prev) => ({
+      ...prev,
+      completedLessons: [...new Set([...prev.completedLessons, lessonId])],
+    }));
+  }, []);
+
+  const isLessonComplete = useCallback((lessonId) => {
+    return progress.completedLessons.includes(lessonId);
+  }, [progress.completedLessons]);
+
   // ── Sync to Supabase ──
   const syncToRemote = useCallback(async (uid) => {
     if (!uid || !isSupabaseConfigured()) return;
@@ -128,6 +142,9 @@ export function useProgress(userId) {
     // Quiz
     setQuizScore,
     getQuizScore: (topicId) => progress.quizScores[topicId] ?? null,
+    // Curriculum lessons
+    completeLesson,
+    isLessonComplete,
     // Sync
     syncToRemote,
     resetProgress,

@@ -28,7 +28,7 @@ html {
   overscroll-behavior: contain;
 }
 
-/* Typography scale for children */
+/* Typography scale */
 .text-display {
   font-size: 2rem;
   font-weight: 700;
@@ -68,16 +68,10 @@ html {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-
-  .tap-hint-wave,
-  .tap-hint-pulse,
-  .tap-hint-fade {
-    animation: none !important;
-  }
 }
 
 body {
-  background: #F8FAFC;
+  background: #ffffff;
   color: #1E293B;
   min-height: 100dvh;
   overflow-x: hidden;
@@ -95,39 +89,4 @@ body {
 }
 .scrollbar-none::-webkit-scrollbar {
   display: none;
-}
-
-/* Tap hint wave animation */
-@keyframes tapWave {
-  0%, 100% { transform: rotate(0deg) scale(1); }
-  15% { transform: rotate(14deg) scale(1.05); }
-  30% { transform: rotate(-8deg) scale(1.02); }
-  45% { transform: rotate(6deg) scale(1.04); }
-  60% { transform: rotate(-4deg) scale(1.01); }
-  75% { transform: rotate(2deg) scale(1.03); }
-}
-
-@keyframes tapPulse {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.15); }
-}
-
-@keyframes tapFadeHint {
-  0% { opacity: 1; }
-  70% { opacity: 1; }
-  100% { opacity: 0; pointer-events: none; }
-}
-
-.tap-hint-wave {
-  animation: tapWave 1.2s ease-in-out infinite;
-  transform-origin: 70% 80%;
-}
-
-.tap-hint-pulse {
-  animation: tapPulse 1.6s ease-in-out infinite;
-}
-
-.tap-hint-fade {
-  animation: tapFadeHint 4s ease-out forwards;
-  animation-delay: 1s;
 }

@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { HiArrowLeft } from 'react-icons/hi2';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { useAuth } from '../hooks/useAuth.jsx';
 import CommentItem from '../components/CommentItem.jsx';
@@ -12,6 +14,7 @@ const PAGE_SIZE = 20;
 
 export default function CommentsPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
@@ -143,13 +146,18 @@ export default function CommentsPage() {
       <div className="relative bg-[#0D9488] overflow-hidden px-6 py-5 shrink-0">
         <div className="absolute -right-8 -top-10 w-28 h-28 rounded-full bg-white/10 pointer-events-none" />
         <div className="absolute left-12 bottom-2 w-6 h-6 rounded-full bg-white/6 pointer-events-none" />
-        <div className="relative z-10 text-center">
-          <h1 className="text-lg font-extrabold text-white leading-snug">
-            💬 မှတ်ချက်များ
-          </h1>
-          <p className="text-white/70 text-xs font-medium mt-1">
-            Creator နဲ့ အခြား user တွေကို ဘာပြောချင်လဲ
-          </p>
+        <div className="relative z-10 flex items-center gap-3">
+          <button onClick={() => navigate('/')} className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/15 hover:bg-white/25 transition-colors shrink-0">
+            <HiArrowLeft size={18} className="text-white" />
+          </button>
+          <div>
+            <h1 className="text-lg font-extrabold text-white leading-snug">
+              💬 မှတ်ချက်များ
+            </h1>
+            <p className="text-white/70 text-xs font-medium mt-0.5">
+              Creator နဲ့ အခြား user တွေကို ဘာပြောချင်လဲ
+            </p>
+          </div>
         </div>
       </div>
 

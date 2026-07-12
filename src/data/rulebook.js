@@ -42,7 +42,25 @@ import stop from '../assets/illustrations/stop.png';
 import walking from '../assets/illustrations/walking.png';
 import lo from '../assets/illustrations/2.png';
 
-
+// ── Flip card images (wrong/right pairs) ──
+import WrongWalk from '../assets/wrong_sidewalk.png';
+import RightWalk from '../assets/right_sidewalk.png';
+import WrongImage from '../assets/wrong_walking_with_adult.png';
+import RightImage from '../assets/right_walking_with_adult.png';
+import WrongAlone from '../assets/wrong_walking.png';
+import RightAlone from '../assets/right_walking.png';
+import WrongGroup from '../assets/wrong_group.png';
+import RightGroup from '../assets/right_group.png';
+import WrongRain from '../assets/wrong1_umbrella.png';
+import RightRain from '../assets/right_umbrella.png';
+import WrongBicycle from '../assets/wrong_bicycle.png';
+import RightBicycle from '../assets/right_bicycle.png';
+import WrongPassenger from '../assets/wrong_passenger.png';
+import RightPassenger from '../assets/right_passenger.png';
+import WrongSidecar from '../assets/wrong_sidecar.png';
+import RightSidecar from '../assets/right_sidecar.png';
+import WrongFerry from '../assets/wrong_ferry.png';
+import RightFerry from '../assets/right_ferry.png';
 
 export const AGE_GROUPS = [
   { id: 'all',    label: 'အားလုံး' },
@@ -60,20 +78,20 @@ export const CATEGORIES = [
 
 export const RULES = [
   // ── Walking / KG-G2 ──
-  { category: 'walking', ageGroup: 'kg-g2', image: sidewalk, text: 'လူသွားစင်္ကြံပေါ်မှာပဲ လျှောက်ပါ' },
-  { category: 'walking', ageGroup: 'kg-g2', image: holdhand, text: 'လူကြီးလက်ကို ကိုင်ထားပါ' },
-  { category: 'walking', ageGroup: 'kg-g2', image: playground, text: 'ကားလမ်းပေါ် မပြေးရ' },
+  { category: 'walking', ageGroup: 'kg-g2', image: sidewalk, wrongImage: WrongWalk, rightImage: RightWalk, text: 'လူသွားစင်္ကြံပေါ်မှာပဲ လျှောက်ပါ' },
+  { category: 'walking', ageGroup: 'kg-g2', image: holdhand, wrongImage: WrongImage, rightImage: RightImage, text: 'လူကြီးလက်ကို ကိုင်ထားပါ' },
+  { category: 'walking', ageGroup: 'kg-g2', image: playground, wrongImage: WrongGroup, rightImage: RightGroup, text: 'ကားလမ်းပေါ် မပြေးရ' },
   { category: 'walking', ageGroup: 'kg-g2', image: crossing, text: 'ရပ်-ကြည့်-နားထောင်-ကူး' },
   { category: 'walking', ageGroup: 'kg-g2', image: zebra, text: 'လူကူးမျဉ်းကျားကနေပဲ ကူးပါ' },
   // ── Walking / G3-G5 ──
-  { category: 'walking', ageGroup: 'g3-g5', image: walking, text: 'လမ်းဘေးကပ် ကားဘက်မျက်နှာမူပြီးလျှောက်ပါ' },
+  { category: 'walking', ageGroup: 'g3-g5', image: walking, wrongImage: WrongAlone, rightImage: RightAlone, text: 'လမ်းဘေးကပ် ကားဘက်မျက်နှာမူပြီးလျှောက်ပါ' },
   { category: 'walking', ageGroup: 'g3-g5', image: bridge, text: 'တံတားကနေပဲ ကူးပါ' },
   { category: 'walking', ageGroup: 'g3-g5', image: green_light, text: 'မီးစိမ်းမှသာ ကူးပါ' },
   { category: 'walking', ageGroup: 'g3-g5', image: between, text: 'ကားကြားထဲက မထွက်ရ' },
   { category: 'walking', ageGroup: 'g3-g5', image: using_phone, text: 'ဖုန်းမကြည့်ရ' },
   // ── Walking / G6+ ──
   { category: 'walking', ageGroup: 'g6-plus', image: night_bright, text: 'ညဘက် အရောင်တောက်အင်္ကျီ ဝတ်ပါ' },
-  { category: 'walking', ageGroup: 'g6-plus', image: umbrella, text: 'ထီးမြှင့်ဆောင်းပါ' },
+  { category: 'walking', ageGroup: 'g6-plus', image: umbrella, wrongImage: WrongRain, rightImage: RightRain, text: 'ထီးမြှင့်ဆောင်းပါ' },
 
   // ── Bicycle / KG-G2 ──
   { category: 'bicycle', ageGroup: 'kg-g2', image: helmet, text: 'ဦးထုပ်ဆောင်းပါ' },
@@ -81,7 +99,7 @@ export const RULES = [
   { category: 'bicycle', ageGroup: 'kg-g2', image: check, text: 'ဘရိတ်စစ်ပါ' },
   { category: 'bicycle', ageGroup: 'kg-g2', image: bike_walk, text: 'လမ်းကူးရင် ဆင်းတွန်းပါ' },
   // ── Bicycle / G3-G5 ──
-  { category: 'bicycle', ageGroup: 'g3-g5', image: bike_ride, text: 'လမ်းဘေးကပ်စီးပါ' },
+  { category: 'bicycle', ageGroup: 'g3-g5', image: bike_ride, wrongImage: WrongBicycle, rightImage: RightBicycle, text: 'လမ်းဘေးကပ်စီးပါ' },
   { category: 'bicycle', ageGroup: 'g3-g5', image: signal, text: 'လက်ပြအချက်သင်ပါ' },
   // ── Bicycle / G6+ ──
   { category: 'bicycle', ageGroup: 'g6-plus', image: li, text: 'ညဘက် မီးတပ်စီးပါ' },
@@ -91,8 +109,8 @@ export const RULES = [
   { category: 'bicycle', ageGroup: 'g6-plus', image: fastern, text: 'မေးကြိုးချိတ်ပါ' },
 
   // ── Motorcycle / G6-G9 (rider) ──
-  { category: 'motorcycle', ageGroup: 'g6-plus', image: mhelmet, text: 'ဦးထုပ်မဖြစ်မနေဆောင်းပါ' },
-  { category: 'motorcycle', ageGroup: 'g6-plus', image: three, text: 'လူ ၂ ယောက်ထက် မစီးရ' },
+  { category: 'motorcycle', ageGroup: 'g6-plus', image: mhelmet, wrongImage: WrongPassenger, rightImage: RightPassenger, text: 'ဦးထုပ်မဖြစ်မနေဆောင်းပါ' },
+  { category: 'motorcycle', ageGroup: 'g6-plus', image: three, wrongImage: WrongSidecar, rightImage: RightSidecar, text: 'လူ ၂ ယောက်ထက် မစီးရ' },
   { category: 'motorcycle', ageGroup: 'g6-plus', image: mphone, text: 'ဖုန်းမကိုင်ရ' },
   { category: 'motorcycle', ageGroup: 'g6-plus', image: km, text: 'အမြန်နှုန်းကျော်မစီးရ' },
 
@@ -103,7 +121,7 @@ export const RULES = [
   { category: 'motorcycle', ageGroup: 'g6-plus', image: horn, text: 'လမ်းဆုံမှာ နှေးပါ' },
 
   // ── School Bus / KG-G2 ──
-  { category: 'schoolbus', ageGroup: 'kg-g2', image: wrong_ferry, text: 'ခေါင်းလက် မထုတ်ရ' },
+  { category: 'schoolbus', ageGroup: 'kg-g2', image: wrong_ferry, wrongImage: WrongFerry, rightImage: RightFerry, text: 'ခေါင်းလက် မထုတ်ရ' },
   { category: 'schoolbus', ageGroup: 'kg-g2', image: distrupt, text: 'မောင်းသူကို မနှောက်ရ' },
   // ── School Bus / G3-G5 ──
   { category: 'schoolbus', ageGroup: 'g3-g5', image: lo, text: 'တန်းစီပြီးတက်ပါ' },

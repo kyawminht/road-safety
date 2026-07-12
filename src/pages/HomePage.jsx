@@ -1,522 +1,427 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HiCheckCircle, HiArrowRight, HiArrowLeft } from 'react-icons/hi2';
-import RevealCard from '../components/RevealCard.jsx';
-import RuleCard from '../components/RuleCard.jsx';
-import LikeButton from '../components/LikeButton.jsx';
-import { TOPICS, AGE_GROUPS, getCardsForTopic, getRulesForTopic } from '../data/topics.js';
-import { useProgress } from '../hooks/useProgress.js';
-import { useAuth } from '../hooks/useAuth.jsx';
-import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
-import AuthPrompt from '../components/AuthPrompt.jsx';
-import { trackEvent } from '../utils/mixpanel.js';
-import { hapticSuccess, hapticError } from '../utils/haptics.js';
+import { HiArrowRight, HiDocumentText, HiClipboardDocumentList, HiUserGroup, HiBookOpen } from 'react-icons/hi2';
+import { RULES, CATEGORIES, AGE_GROUPS } from '../data/rulebook.js';
+import { GRADES, getLessonsForGrade } from '../data/curriculum.js';
+import CreatorSection from '../components/CreatorSection.jsx';
 
-const STAGES = {
-  TOPICS: 'topics',
-  INTRO: 'intro',
-  RULES: 'rules',
-  CARDS: 'cards',
-  QUIZ: 'quiz',
-  RESULT: 'result',
-  COMPLETE: 'complete',
-};
-
-const slideVariants = {
-  enter: (dir) => ({ x: dir > 0 ? 300 : -300, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir) => ({ x: dir > 0 ? -300 : 300, opacity: 0 }),
-};
+const TOPIC_TABS = [
+  { id: 'all', label: 'Overview' },
+  { id: 'walking', label: 'Walking' },
+  { id: 'bicycle', label: 'Bicycle' },
+  { id: 'motorcycle', label: 'Motorcycle' },
+  { id: 'schoolbus', label: 'School Bus' },
+];
 
 const fadeScale = {
-  initial: { opacity: 0, scale: 0.95 },
-  animate: { opacity: 1, scale: 1 },
-  exit: { opacity: 0, scale: 0.95 },
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
 };
 
-function makeRuleKey(rule, idx) {
-  return `${rule.category}:${rule.ageGroup}:${idx}`;
+/* ── Section content for each category ── */
+const SECTIONS = {
+  walking: [
+    {
+      title: 'အခြေခံ လမ်းဘေးကင်းရေး',
+      desc: 'ကလေးများ အမြဲသတိထားရမည့် အချက်များ',
+      rules: ['လူသွားစင်္ကြံပေါ်မှာပဲ လျှောက်ပါ', 'လူကြီးလက်ကို ကိုင်ထားပါ', 'ကားလမ်းပေါ် မပြေးရ'],
+    },
+    {
+      title: 'လမ်းကူးသည့်အခါ',
+      desc: 'ရပ်-ကြည့်-နားထောင်-ကူး နည်းလမ်း',
+      rules: ['ရပ်-ကြည့်-နားထောင်-ကူး', 'လူကူးမျဉ်းကျားကနေပဲ ကူးပါ', 'မီးစိမ်းမှသာ ကူးပါ', 'တံတားကနေပဲ ကူးပါ'],
+    },
+    {
+      title: 'သတိပေးချက်များ',
+      desc: 'ဘေးအန္တရာယ်ကင်းအောင် ရှောင်ရန်',
+      rules: ['လမ်းဘေးကပ် ကားဘက်မျက်နှာမူပြီးလျှောက်ပါ', 'ကားကြားထဲက မထွက်ရ', 'ဖုန်းမကြည့်ရ', 'ညဘက် အရောင်တောက်အင်္ကျီ ဝတ်ပါ', 'ထီးမြှင့်ဆောင်းပါ'],
+    },
+  ],
+  bicycle: [
+    {
+      title: 'မဖြစ်မနေ ဆောင်ရန်',
+      desc: 'စက်ဘီးစီးသူ အမြဲလုပ်ရန်',
+      rules: ['ဦးထုပ်ဆောင်းပါ', 'ဘရိတ်စစ်ပါ', 'မေးကြိုးချိတ်ပါ'],
+    },
+    {
+      title: 'လမ်းပေါ်မှာ',
+      desc: 'လမ်းအသုံးပြုသည့်အခါ သတိထားရန်',
+      rules: ['လူကြီးနဲ့ပဲစီးပါ', 'လမ်းကူးရင် ဆင်းတွန်းပါ', 'လမ်းဘေးကပ်စီးပါ', 'လမ်းဆုံမှာ နှေးပါ'],
+    },
+    {
+      title: 'အချက်ပြနည်း',
+      desc: 'အချက်ပြစနစ် သင်ယူပါ',
+      rules: ['လက်ပြအချက်သင်ပါ'],
+    },
+    {
+      title: 'ညဘက်နှင့် ရာသီဥတု',
+      desc: 'မြင်နိုင်အောင် ပြင်ဆင်ပါ',
+      rules: ['ညဘက် မီးတပ်စီးပါ', 'အရောင်ဖျော့အင်္ကျီ ဝတ်ပါ', 'ဖုန်းနားမထောင်ရ'],
+    },
+  ],
+  motorcycle: [
+    {
+      title: 'မဖြစ်မနေ ဆောင်ရန်',
+      desc: 'ဆိုင်ကယ်စီးသူ အမြဲလုပ်ရန်',
+      rules: ['ဦးထုပ်မဖြစ်မနေဆောင်းပါ', 'ညဘက် ရှေ့မီးဖွင့်ပါ'],
+    },
+    {
+      title: 'လမ်းပေါ်မှာ',
+      desc: 'လမ်းအသုံးပြုသည့်အခါ သတိထားရန်',
+      rules: ['လူ ၂ ယောက်ထက် မစီးရ', 'အမြန်နှုန်းကျော်မစီးရ', 'လမ်းဆုံမှာ နှေးပါ'],
+    },
+    {
+      title: 'ဘေးအန္တရာယ်ကင်းအောင်',
+      desc: 'ကိုယ့်ကိုကိုယ် ကာကွယ်ရန်',
+      rules: ['ဖုန်းမကိုင်ရ', 'အရက်မူးရင် မမောင်းရ', 'ကလေးကိုရှေ့မတင်ရ'],
+    },
+  ],
+  schoolbus: [
+    {
+      title: 'ဖယ်ရီ/ကျောင်းကား စီးသည့်အခါ',
+      desc: 'ယာဉ်ပေါ်တက်ခြင်းနှင့် ဆင်းခြင်း',
+      rules: ['ခေါင်းလက် မထုတ်ရ', 'မောင်းသူကို မနှောက်ရ', 'တန်းစီပြီးတက်ပါ'],
+    },
+    {
+      title: 'လမ်းကူးသည့်အခါ',
+      desc: 'ကားရပ်မှ ကူးပါ',
+      rules: ['ကားသွားမှ ကူးပါ'],
+    },
+    {
+      title: 'ယာဉ်ပေါ်တွင်',
+      desc: 'ဘေးကင်းအောင် နေရန်',
+      rules: ['တံခါးဝမှာ မရပ်ရ', 'မောင်းသူကို ကြည့်ပါ'],
+    },
+  ],
+};
+
+function StatCard({ number, label, source }) {
+  return (
+    <div className="text-center p-3 sm:p-4">
+      <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-1">{number}</div>
+      <div className="text-gray-500 text-[10px] sm:text-xs leading-tight">{label}</div>
+      {source && <div className="text-gray-400 text-[9px] sm:text-[10px] mt-1">Source</div>}
+    </div>
+  );
+}
+
+function ResourceItem({ icon: Icon, title, description, onClick, color }) {
+  return (
+    <motion.button
+      onClick={onClick}
+      whileTap={{ scale: 0.98 }}
+      className="w-full flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl text-left transition-colors bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300"
+    >
+      <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${color}15` }}>
+        <Icon size={20} className="sm:hidden" style={{ color }} />
+        <Icon size={22} className="hidden sm:block" style={{ color }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="text-gray-900 font-semibold text-sm">{title}</div>
+        <div className="text-gray-500 text-xs mt-0.5">{description}</div>
+      </div>
+      <HiArrowRight className="text-gray-300 shrink-0" size={16} />
+    </motion.button>
+  );
+}
+
+/* ── Rule Row: image + text side by side ── */
+function RuleRow({ rule, index, color, reversed }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.06 }}
+      className={`flex flex-col sm:flex-row ${reversed ? 'sm:flex-row-reverse' : ''} rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-sm`}
+    >
+      {/* Image */}
+      <div className="sm:w-2/5 aspect-[4/3] sm:aspect-auto bg-gray-100 relative shrink-0">
+        <img src={rule.image} alt={rule.text} className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent sm:bg-gradient-to-r" style={reversed ? {} : { background: 'linear-gradient(to right, transparent 70%, rgba(0,0,0,0.05))' }} />
+      </div>
+      {/* Text */}
+      <div className="flex-1 flex items-center p-4 sm:p-5">
+        <div className="flex items-start gap-3 w-full">
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 mt-0.5" style={{ background: `${color}15`, color }}>
+            {index + 1}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="text-gray-900 font-bold text-sm sm:text-base leading-snug">{rule.text}</h4>
+            {rule.desc && <p className="text-gray-400 text-xs sm:text-sm mt-1 leading-relaxed">{rule.desc}</p>}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ── Section block with header + rule rows ── */
+function SectionBlock({ section, rules, color, startIdx }) {
+  return (
+    <div className="space-y-3">
+      <div className="px-1">
+        <h3 className="text-gray-900 font-bold text-sm sm:text-base">{section.title}</h3>
+        <p className="text-gray-400 text-xs sm:text-sm">{section.desc}</p>
+      </div>
+      <div className="space-y-2.5">
+        {section.rules.map((ruleText, i) => {
+          const rule = rules.find((r) => r.text === ruleText);
+          if (!rule) return null;
+          return (
+            <RuleRow
+              key={`${rule.category}-${rule.ageGroup}-${rule.text}`}
+              rule={rule}
+              index={startIdx + i}
+              color={color}
+              reversed={i % 2 === 1}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function OverviewTab() {
+  return (
+    <motion.div key="overview" variants={fadeScale} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.25 }}
+      className="space-y-5 sm:space-y-6">
+      {/* Hero stats */}
+      <div className="rounded-2xl p-4 sm:p-6 bg-gradient-to-br from-teal-50 to-blue-50 border border-teal-100">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          <StatCard number="1,219" label="ကလေးများ လမ်းဘေးကင်းရေး ကျဆုံးခဲ့ရ" source="NHTSA 2024" />
+          <StatCard number="6,228" label="Motorcyclists killed in 2024" source="NHTSA 2024" />
+          <StatCard number="7,080" label="Pedestrians killed in 2024" source="NHTSA 2024" />
+        </div>
+      </div>
+
+      {/* About */}
+      <div>
+        <h2 className="text-gray-900 font-bold text-lg sm:text-xl mb-2">Child Road Safety Curriculum</h2>
+        <p className="text-gray-500 text-sm sm:text-base leading-relaxed">
+          မြန်မာနိုင်ငံ ကလေးများအတွက် လမ်းဘေးကင်းရေး ပညာပေးသင်ခန်းစာများ။
+          ကလေးငယ်များကို လမ်းဘေးကင်းရေး အသိပညာပေးရန် ဒီဇိုင်းဆွဲထားပါသည်။
+        </p>
+      </div>
+
+      {/* Resources */}
+      <div>
+        <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3">Resources</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+          <ResourceItem icon={HiBookOpen} title="Lesson Plans" description="သင်ခန်းစာများ" color="#0891B2" onClick={() => {}} />
+          <ResourceItem icon={HiClipboardDocumentList} title="Assessment Guide" description="စမ်းသပ်မေးခွန်း" color="#0891B2" onClick={() => {}} />
+          <ResourceItem icon={HiDocumentText} title="Student Response Form" description="Worksheets" color="#0891B2" onClick={() => {}} />
+          <ResourceItem icon={HiUserGroup} title="Parent/Caregiver Tip Sheets" description="မိဘများအတွက်" color="#0891B2" onClick={() => {}} />
+        </div>
+      </div>
+
+      {/* Grade levels */}
+      <div>
+        <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3">Grade Levels</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+          {GRADES.map((grade) => (
+            <div key={grade.id} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xl shrink-0" style={{ background: `${grade.color}15` }}>
+                {grade.emoji}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-gray-900 text-sm font-medium truncate">{grade.title}</div>
+                <div className="text-gray-500 text-xs">{grade.age} · {getLessonsForGrade(grade.id).length} lessons</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function TopicTabContent({ categoryId }) {
+  const [ageGroup, setAgeGroup] = useState('all');
+  const category = CATEGORIES.find((c) => c.id === categoryId);
+  const sections = SECTIONS[categoryId] || [];
+
+  const filteredRules = useMemo(() => {
+    let rules = RULES.filter((r) => r.category === categoryId);
+    if (ageGroup !== 'all') {
+      rules = rules.filter((r) => r.ageGroup === ageGroup);
+    }
+    return rules;
+  }, [categoryId, ageGroup]);
+
+  if (!category) return null;
+
+  return (
+    <motion.div key={categoryId} variants={fadeScale} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.25 }}
+      className="space-y-5 sm:space-y-6">
+      {/* Topic header */}
+      <div>
+        <h2 className="text-gray-900 font-bold text-lg sm:text-xl mb-1">{category.title}</h2>
+        <p className="text-gray-500 text-xs sm:text-sm">{filteredRules.length} စည်းကမ်းများ</p>
+      </div>
+
+      {/* Age group filter */}
+      <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
+        {AGE_GROUPS.map((ag) => (
+          <button key={ag.id} onClick={() => setAgeGroup(ag.id)}
+            className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 border ${
+              ageGroup === ag.id
+                ? 'text-white border-transparent shadow-sm'
+                : 'bg-gray-100 text-gray-500 border-gray-200 hover:text-gray-700'
+            }`}
+            style={ageGroup === ag.id ? { background: category.color, borderColor: category.color } : {}}>
+            {ag.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Sections with rules */}
+      {ageGroup === 'all' ? (
+        <div className="space-y-6">
+          {(() => {
+            let idx = 0;
+            const matchedTexts = new Set();
+            const blocks = sections.map((section) => {
+              const sectionRules = section.rules
+                .map((text) => filteredRules.find((r) => r.text === text))
+                .filter(Boolean);
+              sectionRules.forEach((r) => matchedTexts.add(r.text));
+              const startIdx = idx;
+              idx += sectionRules.length;
+              return { section, sectionRules, startIdx };
+            }).filter((b) => b.sectionRules.length > 0);
+
+            const unmatched = filteredRules.filter((r) => !matchedTexts.has(r.text));
+
+            return (
+              <>
+                {blocks.map((b, sIdx) => (
+                  <SectionBlock
+                    key={sIdx}
+                    section={{ title: b.section.title, desc: b.section.desc, rules: b.sectionRules.map((r) => r.text) }}
+                    rules={filteredRules}
+                    color={category.color}
+                    startIdx={b.startIdx}
+                  />
+                ))}
+                {unmatched.length > 0 && (
+                  <div className="space-y-2.5">
+                    {unmatched.map((rule, i) => (
+                      <RuleRow
+                        key={`${rule.category}-${rule.ageGroup}-${idx + i}`}
+                        rule={rule}
+                        index={idx + i}
+                        color={category.color}
+                        reversed={i % 2 === 1}
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
+            );
+          })()}
+        </div>
+      ) : (
+        <div className="space-y-2.5">
+          {filteredRules.map((rule, idx) => (
+            <RuleRow
+              key={`${rule.category}-${rule.ageGroup}-${idx}`}
+              rule={rule}
+              index={idx}
+              color={category.color}
+              reversed={idx % 2 === 1}
+            />
+          ))}
+        </div>
+      )}
+
+      {filteredRules.length === 0 && (
+        <div className="text-center py-8 sm:py-12 text-gray-400 text-sm">
+          ဒီအုပ်စုအတွက် စည်းကမ်းများ မရှိသေးပါ
+        </div>
+      )}
+    </motion.div>
+  );
 }
 
 export default function HomePage() {
-  const { user } = useAuth();
-  const {
-    completeTopic, isTopicComplete, completedCount,
-    viewRule,
-    setQuizScore, syncToRemote,
-  } = useProgress(user?.id);
+  const [activeTab, setActiveTab] = useState('all');
+  const navigate = useNavigate();
 
-  const [stage, setStage] = useState(STAGES.TOPICS);
-  const [topicId, setTopicId] = useState(null);
-  const [cardIndex, setCardIndex] = useState(0);
-  const [flipped, setFlipped] = useState(false);
-  const [ruleIndex, setRuleIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
-  const [ageGroup, setAgeGroup] = useState('all');
-
-  // Quiz state
-  const [quizChoice, setQuizChoice] = useState(null); // 'wrong' | 'right' | null
-  const [quizCorrect, setQuizCorrect] = useState(null); // true | false | null
-
-  // Topic likes
-  const [topicLikes, setTopicLikes] = useState({});
-
-  const topic = useMemo(() => TOPICS.find((t) => t.id === topicId), [topicId]);
-  const cards = useMemo(() => (topicId ? getCardsForTopic(topicId) : []), [topicId]);
-  const rules = useMemo(() => (topicId ? getRulesForTopic(topicId, ageGroup) : []), [topicId, ageGroup]);
-  const currentRule = rules[ruleIndex];
-
-  // Pick a random card for the quiz
-  const quizCard = useMemo(() => {
-    if (cards.length === 0) return null;
-    // Use a deterministic pick based on topicId
-    const idx = topicId ? topicId.charCodeAt(0) % cards.length : 0;
-    return cards[idx];
-  }, [cards, topicId]);
-
-  // Journey steps: Rules → Cards → Quiz
-  const journeySteps = useMemo(() => {
-    const steps = [];
-    if (rules.length > 0) steps.push({ label: 'စည်းကမ်း', icon: '📋' });
-    if (cards.length > 0) steps.push({ label: 'လေ့လာရန်', icon: '📇' });
-    steps.push({ label: 'Quiz', icon: '❓' });
-    return steps;
-  }, [rules.length, cards.length]);
-
-  const nextIncompleteTopic = useMemo(
-    () => TOPICS.find((t) => !isTopicComplete(t.id)) || null,
-    [isTopicComplete],
-  );
-
-  // Fetch topic likes
-  useEffect(() => {
-    if (!isSupabaseConfigured()) return;
-    (async () => {
-      const { data } = await supabase.from('topic_likes').select('topic_id, user_id');
-      if (!data) return;
-      const counts = {};
-      const userLiked = new Set();
-      data.forEach((row) => {
-        counts[row.topic_id] = (counts[row.topic_id] || 0) + 1;
-        if (row.user_id === user?.id) userLiked.add(row.topic_id);
-      });
-      const likes = {};
-      TOPICS.forEach((t) => {
-        likes[t.id] = { count: counts[t.id] || 0, liked: userLiked.has(t.id) };
-      });
-      setTopicLikes(likes);
-    })();
-  }, [user?.id]);
-
-  // Sync progress
-  useEffect(() => {
-    if (user?.id) syncToRemote(user.id);
-  }, [completedCount, user?.id, syncToRemote]);
-
-  // ── Navigation ──
-  const goToTopic = useCallback((id) => {
-    setTopicId(id);
-    setCardIndex(0);
-    setFlipped(false);
-    setRuleIndex(0);
-    setQuizChoice(null);
-    setQuizCorrect(null);
-    setDirection(1);
-    setStage(STAGES.INTRO);
-    trackEvent('Topic Opened', { topic_id: id });
-  }, []);
-
-  const goToList = useCallback(() => {
-    setStage(STAGES.TOPICS);
-    setTopicId(null);
-  }, []);
-
-  const startJourney = useCallback(() => {
-    // Start with rules if available, otherwise cards
-    if (rules.length > 0) {
-      setRuleIndex(0);
-      setDirection(1);
-      setStage(STAGES.RULES);
-    } else if (cards.length > 0) {
-      setStage(STAGES.CARDS);
-      setFlipped(false);
-    } else {
-      setStage(STAGES.QUIZ);
-    }
-  }, [rules.length, cards.length]);
-
-  // Rules navigation
-  const nextRule = useCallback(() => {
-    if (currentRule) viewRule(makeRuleKey(currentRule, ruleIndex));
-    if (ruleIndex + 1 < rules.length) {
-      setDirection(1);
-      setRuleIndex((i) => i + 1);
-    } else {
-      // Rules done → go to cards or quiz
-      if (cards.length > 0) {
-        setStage(STAGES.CARDS);
-        setCardIndex(0);
-        setFlipped(false);
-      } else {
-        setStage(STAGES.QUIZ);
-      }
-    }
-  }, [ruleIndex, rules.length, currentRule, viewRule, cards.length]);
-
-  const prevRule = useCallback(() => {
-    if (ruleIndex > 0) {
-      setDirection(-1);
-      setRuleIndex((i) => i - 1);
-    }
-  }, [ruleIndex]);
-
-  // Cards navigation
-  const nextCard = useCallback(() => {
-    if (cardIndex + 1 < cards.length) {
-      setDirection(1);
-      setCardIndex((i) => i + 1);
-      setFlipped(false);
-    } else {
-      // Cards done → go to quiz
-      setStage(STAGES.QUIZ);
-    }
-  }, [cardIndex, cards.length]);
-
-  const prevCard = useCallback(() => {
-    if (cardIndex > 0) {
-      setDirection(-1);
-      setCardIndex((i) => i - 1);
-      setFlipped(false);
-    }
-  }, [cardIndex]);
-
-  // Quiz
-  const answerQuiz = useCallback((choice) => {
-    const isCorrect = choice === 'right';
-    setQuizChoice(choice);
-    setQuizCorrect(isCorrect);
-    if (isCorrect) {
-      hapticSuccess();
-    } else {
-      hapticError();
-    }
-    trackEvent('Quiz Answered', { topic_id: topicId, correct: isCorrect });
-    setQuizScore(topicId, isCorrect);
-  }, [topicId, setQuizScore]);
-
-  const finishQuiz = useCallback(() => {
-    completeTopic(topicId);
-    setStage(STAGES.COMPLETE);
-    if (!user) setShowAuthPrompt(true);
-  }, [topicId, completeTopic, user]);
-
-  const goToNextTopic = useCallback(() => {
-    const next = TOPICS.find((t) => t.id !== topicId && !isTopicComplete(t.id));
-    if (next) goToTopic(next.id);
-    else goToList();
-  }, [topicId, isTopicComplete, goToTopic, goToList]);
-
-  const toggleTopicLike = useCallback(async (tid) => {
-    if (!user?.id) { setShowAuthPrompt(true); return; }
-    if (!isSupabaseConfigured()) return;
-    const current = topicLikes[tid];
-    if (current?.liked) {
-      await supabase.from('topic_likes').delete().eq('user_id', user.id).eq('topic_id', tid);
-      setTopicLikes((prev) => ({ ...prev, [tid]: { count: Math.max(0, (prev[tid]?.count || 1) - 1), liked: false } }));
-    } else {
-      await supabase.from('topic_likes').insert({ user_id: user.id, topic_id: tid });
-      setTopicLikes((prev) => ({ ...prev, [tid]: { count: (prev[tid]?.count || 0) + 1, liked: true } }));
-    }
-  }, [user, topicLikes]);
-
-  // ── Render ──
   return (
-    <div className="flex-1 overflow-hidden flex flex-col bg-[#0F1A2E]">
-      <AnimatePresence mode="wait" custom={direction}>
-
-        {/* ══════ TOPIC LIST ══════ */}
-        {stage === STAGES.TOPICS && (
-          <motion.div key="topics" variants={fadeScale} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.3 }} className="flex-1 overflow-y-auto">
-            <div className="px-5 pt-6 pb-4 max-w-lg mx-auto">
-              <div className="mb-6">
-                <h1 className="text-display text-white mb-1">သင်ခန်းစာများ</h1>
-                <p className="text-white/50 text-sm">{completedCount}/{TOPICS.length} ပြီးပါပြီ</p>
-                <div className="mt-3 h-1.5 rounded-full bg-white/10 overflow-hidden">
-                  <motion.div className="h-full rounded-full bg-teal-400" initial={false} animate={{ width: `${(completedCount / TOPICS.length) * 100}%` }} transition={{ duration: 0.5, ease: 'easeOut' }} />
-                </div>
-              </div>
-
-              {/* Age group filter */}
-              <div className="flex gap-2 mb-5 overflow-x-auto scrollbar-none pb-1">
-                {AGE_GROUPS.map((ag) => (
-                  <button key={ag.id} onClick={() => setAgeGroup(ag.id)}
-                    className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 border ${
-                      ageGroup === ag.id
-                        ? 'bg-teal-500 text-white border-teal-400 shadow-lg shadow-teal-500/20'
-                        : 'bg-white/5 text-white/50 border-white/10 hover:text-white/70 hover:border-white/20'
-                    }`}>
-                    {ag.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Topic cards */}
-              <div className="flex flex-col gap-3 relative">
-                {TOPICS.map((t, idx) => {
-                  const done = isTopicComplete(t.id);
-                  return (
-                    <motion.button key={t.id} onClick={() => goToTopic(t.id)} whileTap={{ scale: 0.97 }}
-                      initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.06, duration: 0.3 }}
-                      className="w-full flex items-center gap-4 rounded-2xl p-4 text-left transition-colors"
-                      style={{ background: done ? `linear-gradient(135deg, ${t.color}22, ${t.color}11)` : 'rgba(255,255,255,0.05)', border: `1px solid ${done ? t.color + '44' : 'rgba(255,255,255,0.08)'}` }}>
-                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shrink-0" style={{ background: `${t.color}25` }}>{t.emoji}</div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-white font-bold text-lg truncate">{t.title}</span>
-                          {done && <HiCheckCircle className="text-green-400 shrink-0" size={20} />}
-                        </div>
-                        {/* Journey steps */}
-                        <div className="flex items-center gap-1.5 mt-1.5">
-                          {journeySteps.map((step, i) => (
-                            <span key={i} className="flex items-center gap-1 text-white/40 text-[11px]">
-                              {i > 0 && <span className="text-white/20">→</span>}
-                              <span>{step.icon}</span>
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      <div onClick={(e) => e.stopPropagation()}>
-                        <LikeButton liked={topicLikes[t.id]?.liked || false} count={topicLikes[t.id]?.count || 0} onToggle={() => toggleTopicLike(t.id)} size="sm" />
-                      </div>
-                      <HiArrowRight className="text-white/30 shrink-0" size={20} />
-                    </motion.button>
-                  );
-                })}
-                {/* Scroll hint gradient */}
-                <div className="sticky bottom-0 h-12 bg-gradient-to-t from-[#0F1A2E] to-transparent pointer-events-none -mb-4" />
-              </div>
+    <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Header */}
+      <div className="px-4 sm:px-6 pt-4 sm:pt-5 pb-0 bg-white border-b border-gray-100">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center bg-teal-100">
+              <span className="text-lg sm:text-xl">🛡️</span>
             </div>
-          </motion.div>
-        )}
+            <div>
+              <span className="text-gray-900 font-bold text-sm sm:text-base block leading-tight">Road Safety Education</span>
+              <span className="text-gray-400 text-[10px] sm:text-xs">Myanmar Child Pedestrian Safety Curriculum</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        {/* ══════ INTRO ══════ */}
-        {stage === STAGES.INTRO && topic && (
-          <motion.div key={`intro-${topicId}`} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="flex-1 flex flex-col items-center justify-center px-8 text-center">
-            <button onClick={goToList} className="absolute top-4 left-4 flex items-center gap-1 text-white/50 hover:text-white/80 text-sm transition-colors z-10">
-              <HiArrowLeft size={16} /><span>ပြန်</span>
-            </button>
-            <motion.div initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.1 }} className="text-7xl mb-6">{topic.emoji}</motion.div>
-            <motion.h2 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-2xl font-bold text-white mb-3">{topic.title}</motion.h2>
-            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="text-white/60 text-base mb-8 max-w-xs">{topic.intro}</motion.p>
-
-            {/* Journey timeline */}
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
-              className="flex items-center gap-3 mb-8">
-              {journeySteps.map((step, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  {i > 0 && <span className="text-white/20 text-xs">→</span>}
-                  <div className="flex flex-col items-center gap-1">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
-                      style={{ background: `${topic.color}20`, border: `1px solid ${topic.color}33` }}>
-                      {step.icon}
-                    </div>
-                    <span className="text-white/40 text-[10px] font-medium">{step.label}</span>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-
-            <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} onClick={startJourney} whileTap={{ scale: 0.96 }}
-              className="px-8 py-3.5 rounded-xl text-white font-bold text-base shadow-lg transition-colors" style={{ background: topic.color, boxShadow: `0 8px 24px ${topic.color}44` }}>
-              စတင်ရန် →
-            </motion.button>
-          </motion.div>
-        )}
-
-        {/* ══════ RULES ══════ */}
-        {stage === STAGES.RULES && topic && currentRule && (
-          <motion.div key={`rules-${topicId}-${ruleIndex}`} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="flex-1 flex flex-col overflow-hidden">
-            {/* Top bar */}
-            <div className="relative z-30 flex items-center justify-between px-4 py-2" style={{ background: 'rgba(15, 26, 46, 0.85)', backdropFilter: 'blur(12px)' }}>
-              <button onClick={goToList} className="flex items-center gap-1 text-white/50 hover:text-white/80 text-sm transition-colors"><HiArrowLeft size={16} /></button>
-              <div className="flex items-center gap-2">
-                <span className="text-base">{topic.emoji}</span>
-                <span className="text-white/70 text-xs font-bold">📋 စည်းကမ်း</span>
-              </div>
-              <span className="text-white/40 text-xs tabular-nums">{ruleIndex + 1}/{rules.length}</span>
-            </div>
-            {/* Step dots */}
-            <div className="relative z-30 flex items-center justify-center gap-1.5 py-2" style={{ background: 'rgba(15, 26, 46, 0.6)' }}>
-              {rules.map((_, i) => (<div key={i} className="rounded-full transition-all duration-300" style={{ width: i === ruleIndex ? 20 : 6, height: 6, background: i === ruleIndex ? topic.color : i < ruleIndex ? `${topic.color}66` : 'rgba(255,255,255,0.15)' }} />))}
-            </div>
-            {/* Card area */}
-            <div className="flex-1 relative overflow-hidden">
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div key={`${topicId}-rule-${ruleIndex}`} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25, ease: 'easeInOut' }} className="absolute inset-0">
-                  <RuleCard rule={currentRule} index={ruleIndex} total={rules.length} color={topic.color} />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-            {/* Bottom bar */}
-            <div className="relative z-30 flex items-center justify-between px-5 py-3" style={{ background: 'rgba(15, 26, 46, 0.9)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <button onClick={prevRule} disabled={ruleIndex === 0} className="flex items-center gap-1 text-white/50 hover:text-white/80 disabled:opacity-20 disabled:cursor-not-allowed text-sm transition-colors">
-                <HiArrowLeft size={16} /><span>နောက်</span>
-              </button>
-              <motion.button onClick={nextRule} whileTap={{ scale: 0.96 }}
-                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-white font-bold text-sm shadow-lg transition-colors" style={{ background: topic.color, boxShadow: `0 4px 16px ${topic.color}44` }}>
-                <span>{ruleIndex + 1 < rules.length ? 'နောက်တစ်ခု' : cards.length > 0 ? 'လေ့လာရန် →' : 'Quiz ဖြေရန်'}</span>
-                <HiArrowRight size={16} />
-              </motion.button>
-            </div>
-          </motion.div>
-        )}
-
-        {/* ══════ CARDS ══════ */}
-        {stage === STAGES.CARDS && topic && cards[cardIndex] && (
-          <motion.div key={`cards-${topicId}-${cardIndex}`} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="flex-1 flex flex-col overflow-hidden">
-            <div className="relative z-30 flex items-center justify-between px-4 py-2" style={{ background: 'rgba(15, 26, 46, 0.85)', backdropFilter: 'blur(12px)' }}>
-              <button onClick={goToList} className="flex items-center gap-1 text-white/50 hover:text-white/80 text-sm transition-colors"><HiArrowLeft size={16} /></button>
-              <div className="flex items-center gap-1.5">
-                {cards.map((_, i) => (<div key={i} className="rounded-full transition-all duration-300" style={{ width: i === cardIndex ? 20 : 6, height: 6, background: i <= cardIndex ? topic.color : 'rgba(255,255,255,0.15)' }} />))}
-              </div>
-              <span className="text-white/40 text-xs tabular-nums">{cardIndex + 1}/{cards.length}</span>
-            </div>
-            <div className="flex-1 relative overflow-hidden">
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div key={cards[cardIndex].id} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25, ease: 'easeInOut' }} className="absolute inset-0">
-                  <RevealCard card={cards[cardIndex]} cardIndex={cardIndex} totalCards={cards.length} isFlipped={flipped} onFlip={(val) => setFlipped(val)} />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-            <div className="relative z-30 flex items-center justify-between px-5 py-3" style={{ background: 'rgba(15, 26, 46, 0.9)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <button onClick={prevCard} disabled={cardIndex === 0} className="flex items-center gap-1 text-white/50 hover:text-white/80 disabled:opacity-20 disabled:cursor-not-allowed text-sm transition-colors">
-                <HiArrowLeft size={16} /><span>နောက်</span>
-              </button>
-              <AnimatePresence>
-                {flipped && (
-                  <motion.button initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} onClick={nextCard} whileTap={{ scale: 0.96 }}
-                    className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-white font-bold text-sm shadow-lg transition-colors" style={{ background: topic.color, boxShadow: `0 4px 16px ${topic.color}44` }}>
-                    <span>{cardIndex + 1 < cards.length ? 'နောက်တစ်ခု' : 'Quiz ဖြေရန်'}</span>
-                    <HiArrowRight size={16} />
-                  </motion.button>
+      {/* Tabs */}
+      <div className="border-b border-gray-200 bg-white">
+        <div className="max-w-6xl mx-auto flex overflow-x-auto scrollbar-none">
+          {TOPIC_TABS.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className="flex-shrink-0 relative py-3 px-4 sm:px-5 text-center transition-colors"
+              >
+                <span className={`text-xs sm:text-sm font-semibold whitespace-nowrap ${isActive ? 'text-teal-600' : 'text-gray-400 hover:text-gray-600'}`}>
+                  {tab.label}
+                </span>
+                {isActive && (
+                  <motion.div
+                    layoutId="tab-indicator"
+                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-teal-500 rounded-full"
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  />
                 )}
-              </AnimatePresence>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto bg-white">
+        <div className="px-4 sm:px-6 py-4 sm:py-6 max-w-6xl mx-auto">
+          <AnimatePresence mode="wait">
+            {activeTab === 'all' && <OverviewTab />}
+            {activeTab !== 'all' && <TopicTabContent categoryId={activeTab} />}
+          </AnimatePresence>
+
+          <CreatorSection />
+
+          {/* Footer */}
+          <footer className="mt-4 sm:mt-6 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 sm:py-5 bg-gray-900 rounded-t-2xl">
+            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+              <p className="text-gray-500 text-[10px] sm:text-xs">Road Safety Education Program · Myanmar</p>
+              <div className="flex items-center gap-4">
+                <button onClick={() => navigate('/comments')} className="flex items-center gap-1.5 text-gray-400 hover:text-teal-400 text-[10px] sm:text-xs transition-colors">
+                  <HiDocumentText size={12} />
+                  <span>Feedback</span>
+                </button>
+                <button onClick={() => navigate('/simulator')} className="flex items-center gap-1.5 text-gray-400 hover:text-teal-400 text-[10px] sm:text-xs transition-colors">
+                  <HiBookOpen size={12} />
+                  <span>Games</span>
+                </button>
+              </div>
             </div>
-          </motion.div>
-        )}
-
-        {/* ══════ QUIZ (pick correct image) ══════ */}
-        {stage === STAGES.QUIZ && topic && quizCard && (
-          <motion.div key={`quiz-${topicId}`} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="flex-1 flex flex-col items-center justify-center px-5 text-center">
-            <button onClick={goToList} className="absolute top-4 left-4 flex items-center gap-1 text-white/50 hover:text-white/80 text-sm transition-colors z-10">
-              <HiArrowLeft size={16} /><span>ပြန်</span>
-            </button>
-
-            {/* Quiz badge */}
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-3 px-4 py-1.5 rounded-full text-sm font-semibold"
-              style={{ background: `${topic.color}25`, color: topic.color, border: `1px solid ${topic.color}40` }}>❓ ဘယ်ဟာက မှန်သလဲ?</motion.div>
-
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="text-white/50 text-sm mb-6">
-              ဘယ်ပုံက လုံခြုံသလဲ? တစ်ပုံကို ရွေးပါ
-            </motion.p>
-
-            {/* Two image options — no labels to avoid giving away the answer */}
-            <div className="flex gap-4 w-full max-w-sm">
-              {/* Option A */}
-              <motion.button initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
-                onClick={() => !quizChoice && answerQuiz('wrong')} disabled={!!quizChoice}
-                className="flex-1 rounded-2xl overflow-hidden border-2 transition-all duration-300 disabled:cursor-not-allowed"
-                style={{
-                  borderColor: quizChoice === 'wrong' ? (quizCorrect ? '#22c55e' : '#ef4444') : 'rgba(255,255,255,0.1)',
-                  boxShadow: quizChoice === 'wrong' ? (quizCorrect ? '0 0 20px rgba(34,197,94,0.3)' : '0 0 20px rgba(239,68,68,0.3)') : 'none',
-                }}>
-                <div className="aspect-square bg-black/50 relative">
-                  <img src={quizCard.wrongImage} alt="" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-3 left-0 right-0 flex justify-center">
-                    <span className="text-white text-2xl font-bold bg-black/40 w-10 h-10 rounded-full flex items-center justify-center">A</span>
-                  </div>
-                </div>
-              </motion.button>
-
-              {/* Option B */}
-              <motion.button initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
-                onClick={() => !quizChoice && answerQuiz('right')} disabled={!!quizChoice}
-                className="flex-1 rounded-2xl overflow-hidden border-2 transition-all duration-300 disabled:cursor-not-allowed"
-                style={{
-                  borderColor: quizChoice === 'right' ? (quizCorrect ? '#22c55e' : '#ef4444') : 'rgba(255,255,255,0.1)',
-                  boxShadow: quizChoice === 'right' ? (quizCorrect ? '0 0 20px rgba(34,197,94,0.3)' : '0 0 20px rgba(239,68,68,0.3)') : 'none',
-                }}>
-                <div className="aspect-square bg-black/50 relative">
-                  <img src={quizCard.rightImage} alt="" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-3 left-0 right-0 flex justify-center">
-                    <span className="text-white text-2xl font-bold bg-black/40 w-10 h-10 rounded-full flex items-center justify-center">B</span>
-                  </div>
-                </div>
-              </motion.button>
-            </div>
-
-            {/* Result feedback */}
-            <AnimatePresence>
-              {quizChoice && (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                  className="mt-6 flex flex-col items-center gap-3">
-                  {quizCorrect ? (
-                    <>
-                      <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 300 }} className="text-4xl">🎉</motion.span>
-                      <p className="text-green-400 font-bold text-lg">မှန်ပါတယ်!</p>
-                      <p className="text-white/40 text-sm">{quizCard.shortRule}</p>
-                    </>
-                  ) : (
-                    <>
-                      <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 300 }} className="text-4xl">😅</motion.span>
-                      <p className="text-red-400 font-bold text-lg">မှားပါတယ်!</p>
-                      <p className="text-white/40 text-sm">{quizCard.shortRule}</p>
-                    </>
-                  )}
-                  <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} onClick={finishQuiz} whileTap={{ scale: 0.96 }}
-                    className="mt-2 px-8 py-3 rounded-xl text-white font-bold text-base shadow-lg" style={{ background: topic.color, boxShadow: `0 8px 24px ${topic.color}44` }}>
-                    ပြီးပါပြီ ✓
-                  </motion.button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        )}
-
-        {/* ══════ COMPLETE ══════ */}
-        {stage === STAGES.COMPLETE && topic && (
-          <motion.div key={`complete-${topicId}`} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="flex-1 flex flex-col items-center justify-center px-8 text-center">
-            <motion.div initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 12 }} className="mb-6">
-              <div className="w-24 h-24 rounded-full flex items-center justify-center" style={{ background: `${topic.color}25`, boxShadow: `0 0 40px ${topic.color}33` }}><span className="text-5xl">✅</span></div>
-            </motion.div>
-            <motion.h2 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-2xl font-bold text-white mb-2">ပြီးပါပြီ!</motion.h2>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="text-white/50 text-base mb-2">{topic.emoji} {topic.title}</motion.p>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }} className="text-white/30 text-sm mb-8">{completedCount + 1}/{TOPICS.length} သင်ခန်းစာ ပြီးပါပြီ</motion.p>
-            <div className="flex flex-col gap-3 w-full max-w-xs">
-              {nextIncompleteTopic && (
-                <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} onClick={goToNextTopic} whileTap={{ scale: 0.96 }}
-                  className="w-full py-3.5 rounded-xl text-white font-bold text-base shadow-lg flex items-center justify-center gap-2" style={{ background: nextIncompleteTopic.color, boxShadow: `0 8px 24px ${nextIncompleteTopic.color}44` }}>
-                  <span>{nextIncompleteTopic.emoji} နောက်တစ်ခု</span><HiArrowRight size={18} />
-                </motion.button>
-              )}
-              <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} onClick={goToList} whileTap={{ scale: 0.96 }}
-                className="w-full py-3 rounded-xl text-white/40 font-semibold text-sm hover:text-white/60 transition-colors">
-                သင်ခန်းစာ အားလုံး
-              </motion.button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AuthPrompt open={showAuthPrompt} onClose={() => setShowAuthPrompt(false)} />
+          </footer>
+        </div>
+      </div>
     </div>
   );
 }

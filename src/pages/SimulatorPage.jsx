@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { HiArrowLeft } from 'react-icons/hi2';
 import { trackEvent } from '../utils/mixpanel.js';
 
 export default function SimulatorPage() {
@@ -39,6 +40,11 @@ export default function SimulatorPage() {
 
   return (
     <div className="flex-1 overflow-y-auto bg-[#F8FAFC] px-6 py-8">
+      {/* Back button */}
+      <button onClick={() => navigate('/')} className="flex items-center gap-1 text-gray-400 hover:text-gray-600 text-sm transition-colors mb-4">
+        <HiArrowLeft size={16} /><span>ပြန်</span>
+      </button>
+
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
