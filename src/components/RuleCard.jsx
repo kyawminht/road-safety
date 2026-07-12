@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
+import ImageWithPlaceholder from './ImageWithPlaceholder.jsx';
 
 export default function RuleCard({ rule, index, total, color }) {
   return (
     <div className="h-full w-full bg-black flex flex-col relative overflow-hidden">
       {/* Full-screen illustration */}
       <div className="absolute inset-0">
-        <img
+        <ImageWithPlaceholder
           src={rule.image}
           alt={rule.text}
           className="absolute inset-0 w-full h-full object-contain"

@@ -21,11 +21,59 @@
 
 html {
   font-family: 'Noto Sans Myanmar', sans-serif;
-  font-size: 17px;
+  font-size: 16px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: contain;
+}
+
+/* Typography scale for children */
+.text-display {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.text-heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.text-subheading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.text-body {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.text-caption {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .tap-hint-wave,
+  .tap-hint-pulse,
+  .tap-hint-fade {
+    animation: none !important;
+  }
 }
 
 body {

@@ -10,6 +10,7 @@ import { useAuth } from '../hooks/useAuth.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import AuthPrompt from '../components/AuthPrompt.jsx';
 import { trackEvent } from '../utils/mixpanel.js';
+import { hapticSuccess, hapticError } from '../utils/haptics.js';
 
 const STAGES = {
   TOPICS: 'topics',
@@ -41,7 +42,7 @@ export default function HomePage() {
   const { user } = useAuth();
   const {
     completeTopic, isTopicComplete, completedCount,
-    viewRule, isRuleViewed,
+    viewRule,
     setQuizScore, syncToRemote,
   } = useProgress(user?.id);
 
@@ -195,6 +196,11 @@ export default function HomePage() {
     const isCorrect = choice === 'right';
     setQuizChoice(choice);
     setQuizCorrect(isCorrect);
+    if (isCorrect) {
+      hapticSuccess();
+    } else {
+      hapticError();
+    }
     trackEvent('Quiz Answered', { topic_id: topicId, correct: isCorrect });
     setQuizScore(topicId, isCorrect);
   }, [topicId, setQuizScore]);
@@ -234,7 +240,7 @@ export default function HomePage() {
           <motion.div key="topics" variants={fadeScale} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.3 }} className="flex-1 overflow-y-auto">
             <div className="px-5 pt-6 pb-4 max-w-lg mx-auto">
               <div className="mb-6">
-                <h1 className="text-2xl font-bold text-white mb-1">သင်ခန်းစာများ</h1>
+                <h1 className="text-display text-white mb-1">သင်ခန်းစာများ</h1>
                 <p className="text-white/50 text-sm">{completedCount}/{TOPICS.length} ပြီးပါပြီ</p>
                 <div className="mt-3 h-1.5 rounded-full bg-white/10 overflow-hidden">
                   <motion.div className="h-full rounded-full bg-teal-400" initial={false} animate={{ width: `${(completedCount / TOPICS.length) * 100}%` }} transition={{ duration: 0.5, ease: 'easeOut' }} />
@@ -256,7 +262,7 @@ export default function HomePage() {
               </div>
 
               {/* Topic cards */}
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 relative">
                 {TOPICS.map((t, idx) => {
                   const done = isTopicComplete(t.id);
                   return (
@@ -264,30 +270,31 @@ export default function HomePage() {
                       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.06, duration: 0.3 }}
                       className="w-full flex items-center gap-4 rounded-2xl p-4 text-left transition-colors"
                       style={{ background: done ? `linear-gradient(135deg, ${t.color}22, ${t.color}11)` : 'rgba(255,255,255,0.05)', border: `1px solid ${done ? t.color + '44' : 'rgba(255,255,255,0.08)'}` }}>
-                      <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ background: `${t.color}20` }}>{t.emoji}</div>
+                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shrink-0" style={{ background: `${t.color}25` }}>{t.emoji}</div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-white font-bold text-base truncate">{t.title}</span>
-                          {done && <HiCheckCircle className="text-green-400 shrink-0" size={18} />}
+                          <span className="text-white font-bold text-lg truncate">{t.title}</span>
+                          {done && <HiCheckCircle className="text-green-400 shrink-0" size={20} />}
                         </div>
                         {/* Journey steps */}
-                        <div className="flex items-center gap-1.5 mt-1">
+                        <div className="flex items-center gap-1.5 mt-1.5">
                           {journeySteps.map((step, i) => (
-                            <span key={i} className="flex items-center gap-1 text-white/30 text-[10px]">
-                              {i > 0 && <span className="text-white/15">→</span>}
+                            <span key={i} className="flex items-center gap-1 text-white/40 text-[11px]">
+                              {i > 0 && <span className="text-white/20">→</span>}
                               <span>{step.icon}</span>
                             </span>
                           ))}
-                          <span className="text-white/25 text-[10px] ml-1">{journeySteps.length} steps</span>
                         </div>
                       </div>
                       <div onClick={(e) => e.stopPropagation()}>
                         <LikeButton liked={topicLikes[t.id]?.liked || false} count={topicLikes[t.id]?.count || 0} onToggle={() => toggleTopicLike(t.id)} size="sm" />
                       </div>
-                      <HiArrowRight className="text-white/30 shrink-0" size={18} />
+                      <HiArrowRight className="text-white/30 shrink-0" size={20} />
                     </motion.button>
                   );
                 })}
+                {/* Scroll hint gradient */}
+                <div className="sticky bottom-0 h-12 bg-gradient-to-t from-[#0F1A2E] to-transparent pointer-events-none -mb-4" />
               </div>
             </div>
           </motion.div>
@@ -415,12 +422,12 @@ export default function HomePage() {
               style={{ background: `${topic.color}25`, color: topic.color, border: `1px solid ${topic.color}40` }}>❓ ဘယ်ဟာက မှန်သလဲ?</motion.div>
 
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="text-white/50 text-sm mb-6">
-              ပုံနှစ်ပုံထဲမှ မှန်ကန်တဲ့ ပုံကို ရွေးပါ
+              ဘယ်ပုံက လုံခြုံသလဲ? တစ်ပုံကို ရွေးပါ
             </motion.p>
 
-            {/* Two image options */}
+            {/* Two image options — no labels to avoid giving away the answer */}
             <div className="flex gap-4 w-full max-w-sm">
-              {/* Wrong option */}
+              {/* Option A */}
               <motion.button initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
                 onClick={() => !quizChoice && answerQuiz('wrong')} disabled={!!quizChoice}
                 className="flex-1 rounded-2xl overflow-hidden border-2 transition-all duration-300 disabled:cursor-not-allowed"
@@ -429,15 +436,15 @@ export default function HomePage() {
                   boxShadow: quizChoice === 'wrong' ? (quizCorrect ? '0 0 20px rgba(34,197,94,0.3)' : '0 0 20px rgba(239,68,68,0.3)') : 'none',
                 }}>
                 <div className="aspect-square bg-black/50 relative">
-                  <img src={quizCard.wrongImage} alt="Wrong" className="w-full h-full object-cover" />
+                  <img src={quizCard.wrongImage} alt="" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-2 left-2 right-2">
-                    <span className="text-white/70 text-xs font-medium bg-black/50 px-2 py-1 rounded">❌ မှားယွင်း</span>
+                  <div className="absolute bottom-3 left-0 right-0 flex justify-center">
+                    <span className="text-white text-2xl font-bold bg-black/40 w-10 h-10 rounded-full flex items-center justify-center">A</span>
                   </div>
                 </div>
               </motion.button>
 
-              {/* Right option */}
+              {/* Option B */}
               <motion.button initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
                 onClick={() => !quizChoice && answerQuiz('right')} disabled={!!quizChoice}
                 className="flex-1 rounded-2xl overflow-hidden border-2 transition-all duration-300 disabled:cursor-not-allowed"
@@ -446,10 +453,10 @@ export default function HomePage() {
                   boxShadow: quizChoice === 'right' ? (quizCorrect ? '0 0 20px rgba(34,197,94,0.3)' : '0 0 20px rgba(239,68,68,0.3)') : 'none',
                 }}>
                 <div className="aspect-square bg-black/50 relative">
-                  <img src={quizCard.rightImage} alt="Right" className="w-full h-full object-cover" />
+                  <img src={quizCard.rightImage} alt="" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-2 left-2 right-2">
-                    <span className="text-white/70 text-xs font-medium bg-black/50 px-2 py-1 rounded">✅ မှန်ကန်</span>
+                  <div className="absolute bottom-3 left-0 right-0 flex justify-center">
+                    <span className="text-white text-2xl font-bold bg-black/40 w-10 h-10 rounded-full flex items-center justify-center">B</span>
                   </div>
                 </div>
               </motion.button>

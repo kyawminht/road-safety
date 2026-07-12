@@ -1,9 +1,8 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AuthProvider } from './hooks/useAuth.jsx';
 import BottomNav from './components/BottomNav.jsx';
-import CreatorSection from './components/CreatorSection.jsx';
 import HomePage from './pages/HomePage.jsx';
 import CommentsPage from './pages/CommentsPage.jsx';
 import SimulatorPage from './pages/SimulatorPage.jsx';
@@ -13,8 +12,6 @@ import PedestrianFirstGame from './pages/Games/PedestrianFirst/PedestrianFirstGa
 
 function AppShell() {
   const [showNav, setShowNav] = useState(true);
-  const { pathname } = useLocation();
-  const showCreator = pathname === '/comments';
 
   return (
     <div className="h-dvh flex flex-col overflow-hidden bg-[#0F1A2E]">
@@ -26,12 +23,6 @@ function AppShell() {
         <Route path="/games/spot-the-danger" element={<SpotTheDangerGame onNavChange={setShowNav} />} />
         <Route path="/games/pedestrian-first" element={<PedestrianFirstGame onNavChange={setShowNav} />} />
       </Routes>
-
-      {showCreator && (
-        <div className="shrink-0">
-          <CreatorSection />
-        </div>
-      )}
 
       <motion.div
         initial={false}

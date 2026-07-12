@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { trackEvent } from '../utils/mixpanel.js';
+import { hapticFlip } from '../utils/haptics.js';
+import ImageWithPlaceholder from './ImageWithPlaceholder.jsx';
 
 export default function RevealCard({ card, cardIndex, totalCards, onNextCard, isFlipped, onFlip }) {
   const [internalRevealed, setInternalRevealed] = useState(false);
@@ -8,6 +10,7 @@ export default function RevealCard({ card, cardIndex, totalCards, onNextCard, is
 
   const handleToggle = useCallback(() => {
     const newState = !isRevealed;
+    hapticFlip();
     trackEvent('Card Flipped', {
       card_id: card.id,
       topic_id: card.topicId,
@@ -44,16 +47,20 @@ export default function RevealCard({ card, cardIndex, totalCards, onNextCard, is
       {/* ── Full-screen Image ── */}
       <div className="absolute inset-0">
         <AnimatePresence mode="wait">
-          <motion.img
+          <motion.div
             key={isRevealed ? 'right' : 'wrong'}
-            src={isRevealed ? card.rightImage : card.wrongImage}
-            alt={isRevealed ? card.backVisual : card.frontVisual}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: 'easeInOut' }}
-          />
+          >
+            <ImageWithPlaceholder
+              src={isRevealed ? card.rightImage : card.wrongImage}
+              alt={isRevealed ? card.backVisual : card.frontVisual}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </motion.div>
         </AnimatePresence>
 
         {/* Gradient overlay for text readability */}

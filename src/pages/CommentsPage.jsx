@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth.jsx';
 import CommentItem from '../components/CommentItem.jsx';
 import CommentInput from '../components/CommentInput.jsx';
 import AuthPrompt from '../components/AuthPrompt.jsx';
+import PullToRefresh from '../components/PullToRefresh.jsx';
 import { checkProfanity } from '../utils/profanityFilter.js';
 
 const PAGE_SIZE = 20;
@@ -172,48 +173,50 @@ export default function CommentsPage() {
       </AnimatePresence>
 
       {/* Comments list */}
-      <div className="flex-1 overflow-y-auto">
-        {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="w-6 h-6 border-2 border-teal-400/30 border-t-teal-400 rounded-full animate-spin" />
-          </div>
-        ) : error ? (
-          <div className="text-center py-16 px-8">
-            <p className="text-red-400 text-sm">{error}</p>
-            <button
-              onClick={() => { setError(null); fetchComments(); }}
-              className="mt-3 text-teal-400 text-sm underline"
-            >
-              ထပ်ကြိုးစားပါ
-            </button>
-          </div>
-        ) : comments.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 px-8 text-center">
-            <motion.span
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 12 }}
-              className="text-5xl mb-4 block"
-            >
-              💭
-            </motion.span>
-            <p className="text-white/40 text-sm mb-1">မှတ်ချက်မရှိသေးပါ</p>
-            <p className="text-white/25 text-xs">ပထမဆုံး မှတ်ချက်ရေးပါ!</p>
-          </div>
-        ) : (
-          <div className="divide-y divide-white/5">
-            <AnimatePresence>
-              {comments.map((comment) => (
-                <CommentItem
-                  key={comment.id}
-                  comment={comment}
-                  currentUserId={user?.id}
-                  onLike={handleLike}
-                />
-              ))}
-            </AnimatePresence>
-          </div>
-        )}
+      <div className="flex-1 overflow-hidden">
+        <PullToRefresh onRefresh={fetchComments}>
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="w-6 h-6 border-2 border-teal-400/30 border-t-teal-400 rounded-full animate-spin" />
+            </div>
+          ) : error ? (
+            <div className="text-center py-16 px-8">
+              <p className="text-red-400 text-sm">{error}</p>
+              <button
+                onClick={() => { setError(null); fetchComments(); }}
+                className="mt-3 text-teal-400 text-sm underline"
+              >
+                ထပ်ကြိုးစားပါ
+              </button>
+            </div>
+          ) : comments.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 px-8 text-center">
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 12 }}
+                className="text-5xl mb-4 block"
+              >
+                💭
+              </motion.span>
+              <p className="text-white/40 text-sm mb-1">မှတ်ချက်မရှိသေးပါ</p>
+              <p className="text-white/25 text-xs">ပထမဆုံး မှတ်ချက်ရေးပါ!</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-white/5">
+              <AnimatePresence>
+                {comments.map((comment) => (
+                  <CommentItem
+                    key={comment.id}
+                    comment={comment}
+                    currentUserId={user?.id}
+                    onLike={handleLike}
+                  />
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
+        </PullToRefresh>
       </div>
 
       {/* Auth prompt */}

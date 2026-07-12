@@ -13,7 +13,7 @@ export default function SimulatorPage() {
   const games = [
     {
       id: 'be-bright-be-seen',
-      title: 'Be Bright Be Seen',
+      title: 'ထွန်းလင်းပါ',
       subtitle: 'အရောင်တောက်တဲ့အင်္ကျီ ဝတ်သင့်သလဲ',
       emoji: '✨',
       color: 'from-yellow-400 to-orange-500',
@@ -21,7 +21,7 @@ export default function SimulatorPage() {
     },
     {
       id: 'spot-the-danger',
-      title: 'Spot the Danger',
+      title: 'အန္တရာယ်ရှာပါ',
       subtitle: 'လမ်းပေါ်က အန္တရာယ်တွေကို ရှာဖွေပါ',
       emoji: '🔍',
       color: 'from-red-400 to-rose-600',
@@ -29,7 +29,7 @@ export default function SimulatorPage() {
     },
     {
       id: 'pedestrian-first',
-      title: 'Pedestrian First',
+      title: 'လူသွားဦးစားပေး',
       subtitle: 'လူသွားသူကို ဦးစားပေးပါ',
       emoji: '🚶‍♂️',
       color: 'from-green-400 to-teal-600',
