@@ -127,30 +127,26 @@ function ResourceItem({ icon: Icon, title, description, onClick, color }) {
   );
 }
 
-/* ── Rule Row: image + text side by side ── */
-function RuleRow({ rule, index, color, reversed }) {
+/* ── Rule Row: vertical card like shopping card ── */
+function RuleRow({ rule, index, color }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06 }}
-      className="flex flex-row rounded-xl overflow-hidden bg-white border border-gray-200 shadow-sm"
+      className="flex flex-col rounded-xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
     >
-      {/* Image */}
-      <div className="w-20 sm:w-24 lg:w-28 aspect-square sm:aspect-[4/3] bg-gray-100 relative shrink-0">
+      {/* Image on top */}
+      <div className="aspect-[4/3] bg-gray-100 relative">
         <img src={rule.image} alt={rule.text} className="w-full h-full object-cover" />
-      </div>
-      {/* Text */}
-      <div className="flex-1 flex items-center p-3 sm:p-3.5 lg:p-4 min-w-0">
-        <div className="flex items-start gap-2 sm:gap-2.5 w-full">
-          <div className="w-6 h-6 lg:w-7 lg:h-7 rounded-lg flex items-center justify-center text-[10px] lg:text-xs font-bold shrink-0 mt-0.5" style={{ background: `${color}15`, color }}>
-            {index + 1}
-          </div>
-          <div className="flex-1 min-w-0">
-            <h4 className="text-gray-900 font-bold text-xs sm:text-sm lg:text-[15px] leading-snug">{rule.text}</h4>
-            {rule.desc && <p className="text-gray-400 text-[10px] sm:text-xs lg:text-sm mt-0.5 leading-relaxed">{rule.desc}</p>}
-          </div>
+        <div className="absolute top-2 left-2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm" style={{ background: color, color: '#fff' }}>
+          {index + 1}
         </div>
+      </div>
+      {/* Text below */}
+      <div className="p-3 sm:p-3.5 lg:p-4">
+        <h4 className="text-gray-900 font-bold text-xs sm:text-sm lg:text-[15px] leading-snug">{rule.text}</h4>
+        {rule.desc && <p className="text-gray-400 text-[10px] sm:text-xs lg:text-sm mt-1 leading-relaxed">{rule.desc}</p>}
       </div>
     </motion.div>
   );
@@ -204,9 +200,9 @@ function SectionBlock({ section, rules, color, startIdx, stepNumber, totalSteps,
           )}
         </div>
 
-        {/* Rules list — 2-col grid on desktop */}
+        {/* Rules list — 3-col grid on desktop like shopping cards */}
         <div className="px-4 pb-4 sm:px-5 sm:pb-5 lg:px-6 lg:pb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2.5 lg:gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 lg:gap-3 xl:gap-4">
             {section.rules.map((ruleText, i) => {
               const rule = rules.find((r) => r.text === ruleText);
               if (!rule) return null;
@@ -216,7 +212,6 @@ function SectionBlock({ section, rules, color, startIdx, stepNumber, totalSteps,
                   rule={rule}
                   index={startIdx + i}
                   color={color}
-                  reversed={false}
                 />
               );
             })}
@@ -263,7 +258,7 @@ function OverviewTab() {
       {/* Grade levels */}
       <div>
         <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3">Grade Levels</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
           {GRADES.map((grade) => (
             <div key={grade.id} className="flex items-center gap-3 p-3 lg:p-4 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer">
               <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg flex items-center justify-center text-xl lg:text-2xl shrink-0" style={{ background: `${grade.color}15` }}>
@@ -352,14 +347,13 @@ function TopicTabContent({ categoryId }) {
                   />
                 ))}
                 {unmatched.length > 0 && (
-                  <div className="space-y-2.5">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 lg:gap-3 xl:gap-4">
                     {unmatched.map((rule, i) => (
                       <RuleRow
                         key={`${rule.category}-${rule.ageGroup}-${idx + i}`}
                         rule={rule}
                         index={idx + i}
                         color={category.color}
-                        reversed={i % 2 === 1}
                       />
                     ))}
                   </div>
@@ -369,14 +363,13 @@ function TopicTabContent({ categoryId }) {
           })()}
         </div>
       ) : (
-        <div className="space-y-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 lg:gap-3 xl:gap-4">
           {filteredRules.map((rule, idx) => (
             <RuleRow
               key={`${rule.category}-${rule.ageGroup}-${idx}`}
               rule={rule}
               index={idx}
               color={category.color}
-              reversed={idx % 2 === 1}
             />
           ))}
         </div>
@@ -399,7 +392,6 @@ export default function HomePage() {
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="px-4 sm:px-6 lg:px-8 pt-4 sm:pt-5 pb-0 bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
             <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center bg-teal-100">
               <span className="text-lg sm:text-xl">🛡️</span>
@@ -409,12 +401,11 @@ export default function HomePage() {
               <span className="text-gray-400 text-[10px] sm:text-xs">Myanmar Child Pedestrian Safety Curriculum</span>
             </div>
           </div>
-        </div>
       </div>
 
       {/* Tabs */}
       <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto flex overflow-x-auto scrollbar-none">
+        <div className="flex overflow-x-auto scrollbar-none">
           {TOPIC_TABS.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
@@ -441,7 +432,7 @@ export default function HomePage() {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto bg-white">
-        <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl mx-auto">
+        <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
           <AnimatePresence mode="wait">
             {activeTab === 'all' && <OverviewTab />}
             {activeTab !== 'all' && <TopicTabContent categoryId={activeTab} />}
@@ -451,7 +442,7 @@ export default function HomePage() {
 
           {/* Footer */}
           <footer className="mt-4 sm:mt-6 lg:mt-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-4 sm:py-5 bg-gray-900 rounded-t-2xl">
-            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
               <p className="text-gray-500 text-[10px] sm:text-xs">Road Safety Education Program · Myanmar</p>
               <div className="flex items-center gap-4">
                 <button onClick={() => navigate('/comments')} className="flex items-center gap-1.5 text-gray-400 hover:text-teal-400 text-[10px] sm:text-xs transition-colors">
