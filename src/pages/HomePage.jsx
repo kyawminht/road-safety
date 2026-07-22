@@ -99,10 +99,10 @@ const SECTIONS = {
 
 function StatCard({ number, label, source }) {
   return (
-    <div className="text-center p-3 sm:p-4">
-      <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-1">{number}</div>
-      <div className="text-gray-500 text-[10px] sm:text-xs leading-tight">{label}</div>
-      {source && <div className="text-gray-400 text-[9px] sm:text-[10px] mt-1">Source</div>}
+    <div className="text-center p-3 sm:p-4 lg:p-5">
+      <div className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gray-900 mb-1">{number}</div>
+      <div className="text-gray-500 text-[10px] sm:text-xs lg:text-sm leading-tight">{label}</div>
+      {source && <div className="text-gray-400 text-[9px] sm:text-[10px] lg:text-xs mt-1">Source</div>}
     </div>
   );
 }
@@ -134,22 +134,21 @@ function RuleRow({ rule, index, color, reversed }) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06 }}
-      className={`flex flex-col sm:flex-row ${reversed ? 'sm:flex-row-reverse' : ''} rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-sm`}
+      className="flex flex-row rounded-xl overflow-hidden bg-white border border-gray-200 shadow-sm"
     >
       {/* Image */}
-      <div className="sm:w-2/5 aspect-[4/3] sm:aspect-auto bg-gray-100 relative shrink-0">
+      <div className="w-20 sm:w-24 lg:w-28 aspect-square sm:aspect-[4/3] bg-gray-100 relative shrink-0">
         <img src={rule.image} alt={rule.text} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent sm:bg-gradient-to-r" style={reversed ? {} : { background: 'linear-gradient(to right, transparent 70%, rgba(0,0,0,0.05))' }} />
       </div>
       {/* Text */}
-      <div className="flex-1 flex items-center p-4 sm:p-5">
-        <div className="flex items-start gap-3 w-full">
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 mt-0.5" style={{ background: `${color}15`, color }}>
+      <div className="flex-1 flex items-center p-3 sm:p-3.5 lg:p-4 min-w-0">
+        <div className="flex items-start gap-2 sm:gap-2.5 w-full">
+          <div className="w-6 h-6 lg:w-7 lg:h-7 rounded-lg flex items-center justify-center text-[10px] lg:text-xs font-bold shrink-0 mt-0.5" style={{ background: `${color}15`, color }}>
             {index + 1}
           </div>
           <div className="flex-1 min-w-0">
-            <h4 className="text-gray-900 font-bold text-sm sm:text-base leading-snug">{rule.text}</h4>
-            {rule.desc && <p className="text-gray-400 text-xs sm:text-sm mt-1 leading-relaxed">{rule.desc}</p>}
+            <h4 className="text-gray-900 font-bold text-xs sm:text-sm lg:text-[15px] leading-snug">{rule.text}</h4>
+            {rule.desc && <p className="text-gray-400 text-[10px] sm:text-xs lg:text-sm mt-0.5 leading-relaxed">{rule.desc}</p>}
           </div>
         </div>
       </div>
@@ -157,28 +156,72 @@ function RuleRow({ rule, index, color, reversed }) {
   );
 }
 
-/* ── Section block with header + rule rows ── */
-function SectionBlock({ section, rules, color, startIdx }) {
+/* ── Section block with step number, header + rule rows ── */
+function SectionBlock({ section, rules, color, startIdx, stepNumber, totalSteps, isLast }) {
   return (
-    <div className="space-y-3">
-      <div className="px-1">
-        <h3 className="text-gray-900 font-bold text-sm sm:text-base">{section.title}</h3>
-        <p className="text-gray-400 text-xs sm:text-sm">{section.desc}</p>
-      </div>
-      <div className="space-y-2.5">
-        {section.rules.map((ruleText, i) => {
-          const rule = rules.find((r) => r.text === ruleText);
-          if (!rule) return null;
-          return (
-            <RuleRow
-              key={`${rule.category}-${rule.ageGroup}-${rule.text}`}
-              rule={rule}
-              index={startIdx + i}
-              color={color}
-              reversed={i % 2 === 1}
-            />
-          );
-        })}
+    <div className="relative">
+      {/* Section connector line from previous section */}
+      {stepNumber > 1 && (
+        <div className="hidden lg:flex flex-col items-center -mt-3 mb-1">
+          <div className="w-0.5 h-4 rounded-full" style={{ background: `${color}30` }} />
+          <svg width="20" height="12" viewBox="0 0 20 12" fill="none" className="opacity-50 -mt-0.5">
+            <path d="M10 0L10 8M10 8L5 3M10 8L15 3" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+      )}
+      {stepNumber > 1 && (
+        <div className="lg:hidden flex flex-col items-center -mt-3 mb-1">
+          <div className="w-0.5 h-4 rounded-full" style={{ background: `${color}30` }} />
+          <svg width="20" height="12" viewBox="0 0 20 12" fill="none" className="opacity-50 -mt-0.5">
+            <path d="M10 0L10 8M10 8L5 3M10 8L15 3" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+      )}
+
+      <div className="rounded-2xl border-2 overflow-hidden" style={{ borderColor: `${color}25`, background: `${color}04` }}>
+        {/* Section header with step badge */}
+        <div className="flex items-start gap-3 lg:gap-4 px-4 pt-4 pb-3 sm:px-5 sm:pt-5 sm:pb-3 lg:px-6 lg:pt-6 lg:pb-4">
+          <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full flex items-center justify-center text-sm lg:text-base font-bold shrink-0 shadow-sm" style={{ background: color, color: '#fff' }}>
+            {stepNumber}
+          </div>
+          <div className="flex-1 min-w-0 pt-0.5">
+            <h3 className="text-gray-900 font-bold text-sm sm:text-base lg:text-lg leading-snug">{section.title}</h3>
+            <p className="text-gray-400 text-xs sm:text-sm lg:text-base mt-0.5">{section.desc}</p>
+          </div>
+          {stepNumber < totalSteps && (
+            <div className="shrink-0 mt-1">
+              <span className="text-[10px] lg:text-xs font-medium px-2 lg:px-3 py-0.5 rounded-full" style={{ background: `${color}12`, color }}>
+                ဆက်လက် →
+              </span>
+            </div>
+          )}
+          {stepNumber === totalSteps && (
+            <div className="shrink-0 mt-1">
+              <span className="text-[10px] lg:text-xs font-medium px-2 lg:px-3 py-0.5 rounded-full" style={{ background: '#10B98115', color: '#10B981' }}>
+                ✓ ပြီးပါပြီ
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Rules list — 2-col grid on desktop */}
+        <div className="px-4 pb-4 sm:px-5 sm:pb-5 lg:px-6 lg:pb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2.5 lg:gap-3">
+            {section.rules.map((ruleText, i) => {
+              const rule = rules.find((r) => r.text === ruleText);
+              if (!rule) return null;
+              return (
+                <RuleRow
+                  key={`${rule.category}-${rule.ageGroup}-${rule.text}`}
+                  rule={rule}
+                  index={startIdx + i}
+                  color={color}
+                  reversed={false}
+                />
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -187,48 +230,48 @@ function SectionBlock({ section, rules, color, startIdx }) {
 function OverviewTab() {
   return (
     <motion.div key="overview" variants={fadeScale} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.25 }}
-      className="space-y-5 sm:space-y-6">
+      className="space-y-5 sm:space-y-6 lg:space-y-8">
       {/* Hero stats */}
-      <div className="rounded-2xl p-4 sm:p-6 bg-gradient-to-br from-teal-50 to-blue-50 border border-teal-100">
-        <div className="grid grid-cols-3 gap-2 sm:gap-4">
+      <div className="rounded-2xl p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-teal-50 to-blue-50 border border-teal-100">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:gap-6">
           <StatCard number="1,219" label="ကလေးများ လမ်းဘေးကင်းရေး ကျဆုံးခဲ့ရ" source="NHTSA 2024" />
           <StatCard number="6,228" label="Motorcyclists killed in 2024" source="NHTSA 2024" />
           <StatCard number="7,080" label="Pedestrians killed in 2024" source="NHTSA 2024" />
         </div>
       </div>
 
-      {/* About */}
-      <div>
-        <h2 className="text-gray-900 font-bold text-lg sm:text-xl mb-2">Child Road Safety Curriculum</h2>
-        <p className="text-gray-500 text-sm sm:text-base leading-relaxed">
-          မြန်မာနိုင်ငံ ကလေးများအတွက် လမ်းဘေးကင်းရေး ပညာပေးသင်ခန်းစာများ။
-          ကလေးငယ်များကို လမ်းဘေးကင်းရေး အသိပညာပေးရန် ဒီဇိုင်းဆွဲထားပါသည်။
-        </p>
-      </div>
-
-      {/* Resources */}
-      <div>
-        <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3">Resources</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-          <ResourceItem icon={HiBookOpen} title="Lesson Plans" description="သင်ခန်းစာများ" color="#0891B2" onClick={() => {}} />
-          <ResourceItem icon={HiClipboardDocumentList} title="Assessment Guide" description="စမ်းသပ်မေးခွန်း" color="#0891B2" onClick={() => {}} />
-          <ResourceItem icon={HiDocumentText} title="Student Response Form" description="Worksheets" color="#0891B2" onClick={() => {}} />
-          <ResourceItem icon={HiUserGroup} title="Parent/Caregiver Tip Sheets" description="မိဘများအတွက်" color="#0891B2" onClick={() => {}} />
+      {/* About + Resources side by side on desktop */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
+        <div>
+          <h2 className="text-gray-900 font-bold text-lg sm:text-xl lg:text-2xl mb-2">Child Road Safety Curriculum</h2>
+          <p className="text-gray-500 text-sm sm:text-base lg:text-lg leading-relaxed">
+            မြန်မာနိုင်ငံ ကလေးများအတွက် လမ်းဘေးကင်းရေး ပညာပေးသင်ခန်းစာများ။
+            ကလေးငယ်များကို လမ်းဘေးကင်းရေး အသိပညာပေးရန် ဒီဇိုင်းဆွဲထားပါသည်။
+          </p>
+        </div>
+        <div>
+          <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3">Resources</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+            <ResourceItem icon={HiBookOpen} title="Lesson Plans" description="သင်ခန်းစာများ" color="#0891B2" onClick={() => {}} />
+            <ResourceItem icon={HiClipboardDocumentList} title="Assessment Guide" description="စမ်းသပ်မေးခွန်း" color="#0891B2" onClick={() => {}} />
+            <ResourceItem icon={HiDocumentText} title="Student Response Form" description="Worksheets" color="#0891B2" onClick={() => {}} />
+            <ResourceItem icon={HiUserGroup} title="Parent/Caregiver Tip Sheets" description="မိဘများအတွက်" color="#0891B2" onClick={() => {}} />
+          </div>
         </div>
       </div>
 
       {/* Grade levels */}
       <div>
         <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3">Grade Levels</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
           {GRADES.map((grade) => (
-            <div key={grade.id} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xl shrink-0" style={{ background: `${grade.color}15` }}>
+            <div key={grade.id} className="flex items-center gap-3 p-3 lg:p-4 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg flex items-center justify-center text-xl lg:text-2xl shrink-0" style={{ background: `${grade.color}15` }}>
                 {grade.emoji}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-gray-900 text-sm font-medium truncate">{grade.title}</div>
-                <div className="text-gray-500 text-xs">{grade.age} · {getLessonsForGrade(grade.id).length} lessons</div>
+                <div className="text-gray-900 text-sm lg:text-base font-medium truncate">{grade.title}</div>
+                <div className="text-gray-500 text-xs lg:text-sm">{grade.age} · {getLessonsForGrade(grade.id).length} lessons</div>
               </div>
             </div>
           ))}
@@ -255,18 +298,17 @@ function TopicTabContent({ categoryId }) {
 
   return (
     <motion.div key={categoryId} variants={fadeScale} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.25 }}
-      className="space-y-5 sm:space-y-6">
+      className="space-y-5 sm:space-y-6 lg:space-y-8">
       {/* Topic header */}
       <div>
-        <h2 className="text-gray-900 font-bold text-lg sm:text-xl mb-1">{category.title}</h2>
-        <p className="text-gray-500 text-xs sm:text-sm">{filteredRules.length} စည်းကမ်းများ</p>
+        <h2 className="text-gray-900 font-bold text-lg sm:text-xl lg:text-2xl mb-1">{category.title}</h2>
       </div>
 
       {/* Age group filter */}
       <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
         {AGE_GROUPS.map((ag) => (
           <button key={ag.id} onClick={() => setAgeGroup(ag.id)}
-            className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 border ${
+            className={`shrink-0 px-4 lg:px-5 py-1.5 lg:py-2 rounded-full text-xs lg:text-sm font-semibold transition-all duration-200 border ${
               ageGroup === ag.id
                 ? 'text-white border-transparent shadow-sm'
                 : 'bg-gray-100 text-gray-500 border-gray-200 hover:text-gray-700'
@@ -279,7 +321,7 @@ function TopicTabContent({ categoryId }) {
 
       {/* Sections with rules */}
       {ageGroup === 'all' ? (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {(() => {
             let idx = 0;
             const matchedTexts = new Set();
@@ -304,6 +346,9 @@ function TopicTabContent({ categoryId }) {
                     rules={filteredRules}
                     color={category.color}
                     startIdx={b.startIdx}
+                    stepNumber={sIdx + 1}
+                    totalSteps={blocks.length}
+                    isLast={sIdx === blocks.length - 1}
                   />
                 ))}
                 {unmatched.length > 0 && (
@@ -353,8 +398,8 @@ export default function HomePage() {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="px-4 sm:px-6 pt-4 sm:pt-5 pb-0 bg-white border-b border-gray-100">
-        <div className="max-w-6xl mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 pt-4 sm:pt-5 pb-0 bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
             <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center bg-teal-100">
               <span className="text-lg sm:text-xl">🛡️</span>
@@ -369,7 +414,7 @@ export default function HomePage() {
 
       {/* Tabs */}
       <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-6xl mx-auto flex overflow-x-auto scrollbar-none">
+        <div className="max-w-7xl mx-auto flex overflow-x-auto scrollbar-none">
           {TOPIC_TABS.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
@@ -396,7 +441,7 @@ export default function HomePage() {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto bg-white">
-        <div className="px-4 sm:px-6 py-4 sm:py-6 max-w-6xl mx-auto">
+        <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
             {activeTab === 'all' && <OverviewTab />}
             {activeTab !== 'all' && <TopicTabContent categoryId={activeTab} />}
@@ -405,8 +450,8 @@ export default function HomePage() {
           <CreatorSection />
 
           {/* Footer */}
-          <footer className="mt-4 sm:mt-6 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 sm:py-5 bg-gray-900 rounded-t-2xl">
-            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <footer className="mt-4 sm:mt-6 lg:mt-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-4 sm:py-5 bg-gray-900 rounded-t-2xl">
+            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
               <p className="text-gray-500 text-[10px] sm:text-xs">Road Safety Education Program · Myanmar</p>
               <div className="flex items-center gap-4">
                 <button onClick={() => navigate('/comments')} className="flex items-center gap-1.5 text-gray-400 hover:text-teal-400 text-[10px] sm:text-xs transition-colors">

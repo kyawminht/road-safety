@@ -70,10 +70,10 @@ export const AGE_GROUPS = [
 ];
 
 export const CATEGORIES = [
-  { id: 'walking',    title: 'လမ်းလျှောက်ခြင်း စည်းကမ်းများ',       color: '#F97316' },
-  { id: 'bicycle',    title: 'စက်ဘီးစီးခြင်း စည်းကမ်းများ',         color: '#CA8A04' },
-  { id: 'motorcycle',  title: 'ဆိုင်ကယ်စီးခြင်း စည်းကမ်းများ',       color: '#7C3AED' },
-  { id: 'schoolbus',   title: 'ကျောင်းကား/ဖယ်ရီ စည်းကမ်းများ',     color: '#0891B2' },
+  { id: 'walking',    title: 'လမ်းလျှောက်ခြင်း',       color: '#F97316' },
+  { id: 'bicycle',    title: 'စက်ဘီးစီးခြင်း ',         color: '#CA8A04' },
+  { id: 'motorcycle',  title: 'ဆိုင်ကယ်စီးခြင်း',       color: '#7C3AED' },
+  { id: 'schoolbus',   title: 'ကျောင်းကား/ဖယ်ရီ',     color: '#0891B2' },
 ];
 
 export const RULES = [
