@@ -5,9 +5,9 @@ export default function CreatorSection() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="mt-8 sm:mt-12">
+    <div className="mt-8 sm:mt-12 w-full max-w-md">
       {/* Card */}
-      <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden">
+      <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden w-full">
         {/* Toggle button */}
         <button
           onClick={() => setOpen((v) => !v)}

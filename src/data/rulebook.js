@@ -5,7 +5,7 @@ import helmet from '../assets/illustrations/helmet.png';
 import sidewalk from '../assets/illustrations/sidewalk.png';
 import holdhand from '../assets/illustrations/holdhand.png';
 import playground from '../assets/illustrations/playground.png';
-import crossing from '../assets/illustrations/crossing.png';
+import walking1 from '../assets/illustrations/walking1.png';
 import zebra from '../assets/illustrations/zebra.png';
 import bridge from '../assets/illustrations/bridge.png';
 import between from '../assets/illustrations/between.png';
@@ -70,10 +70,10 @@ export const AGE_GROUPS = [
 ];
 
 export const CATEGORIES = [
-  { id: 'walking',    title: 'လမ်းလျှောက်ခြင်း',       color: '#F97316' },
-  { id: 'bicycle',    title: 'စက်ဘီးစီးခြင်း ',         color: '#CA8A04' },
-  { id: 'motorcycle',  title: 'ဆိုင်ကယ်စီးခြင်း',       color: '#7C3AED' },
-  { id: 'schoolbus',   title: 'ကျောင်းကား/ဖယ်ရီ',     color: '#0891B2' },
+  { id: 'walking',    title: { en: 'Walking',      mm: 'လမ်းလျှောက်ခြင်း' },    color: '#F97316', image: walking1 },
+  { id: 'bicycle',    title: { en: 'Bicycle',      mm: 'စက်ဘီးစီးခြင်း' },      color: '#CA8A04', image: bike_ride },
+  { id: 'motorcycle',  title: { en: 'Motorcycle',   mm: 'ဆိုင်ကယ်စီးခြင်း' },    color: '#7C3AED', image: mhelmet },
+  { id: 'schoolbus',   title: { en: 'School Bus',   mm: 'ကျောင်းကား/ဖယ်ရီ' },  color: '#0891B2', image: wrong_ferry },
 ];
 
 export const RULES = [
@@ -81,7 +81,6 @@ export const RULES = [
   { category: 'walking', ageGroup: 'kg-g2', image: sidewalk, wrongImage: WrongWalk, rightImage: RightWalk, text: 'လူသွားစင်္ကြံပေါ်မှာပဲ လျှောက်ပါ' },
   { category: 'walking', ageGroup: 'kg-g2', image: holdhand, wrongImage: WrongImage, rightImage: RightImage, text: 'လူကြီးလက်ကို ကိုင်ထားပါ' },
   { category: 'walking', ageGroup: 'kg-g2', image: playground, wrongImage: WrongGroup, rightImage: RightGroup, text: 'ကားလမ်းပေါ် မပြေးရ' },
-  { category: 'walking', ageGroup: 'kg-g2', image: crossing, text: 'ရပ်-ကြည့်-နားထောင်-ကူး' },
   { category: 'walking', ageGroup: 'kg-g2', image: zebra, text: 'လူကူးမျဉ်းကျားကနေပဲ ကူးပါ' },
   // ── Walking / G3-G5 ──
   { category: 'walking', ageGroup: 'g3-g5', image: walking, wrongImage: WrongAlone, rightImage: RightAlone, text: 'လမ်းဘေးကပ် ကားဘက်မျက်နှာမူပြီးလျှောက်ပါ' },

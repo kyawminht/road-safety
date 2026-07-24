@@ -1,17 +1,25 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy: #0F1A2E;
-  --color-warm-blue: #1E3A5F;
-  --color-teal: #0D9488;
-  --color-soft-red: #FEE2E2;
-  --color-deep-red: #DC2626;
-  --color-soft-green: #DCFCE7;
-  --color-deep-green: #16A34A;
-  --color-warm-gray: #F8FAFC;
-  --color-soft-gray: #E2E8F0;
-  --color-dark-text: #1E293B;
-  --color-mid-text: #64748B;
+  /* Road-sign inspired palette — high contrast, bold */
+  --color-road-yellow: #FBBF24;
+  --color-road-yellow-dark: #F59E0B;
+  --color-road-black: #1A1A1A;
+  --color-road-red: #EF4444;
+  --color-road-red-dark: #DC2626;
+  --color-road-green: #22C55E;
+  --color-road-green-dark: #16A34A;
+  --color-road-white: #FFFFFF;
+  --color-road-gray-50: #F9FAFB;
+  --color-road-gray-100: #F3F4F6;
+  --color-road-gray-200: #E5E7EB;
+  --color-road-gray-300: #D1D5DB;
+  --color-road-gray-400: #9CA3AF;
+  --color-road-gray-500: #6B7280;
+  --color-road-gray-600: #4B5563;
+  --color-road-gray-700: #374151;
+  --color-road-gray-800: #1F2937;
+  --color-road-gray-900: #111827;
 }
 
 * {
@@ -28,7 +36,7 @@ html {
   overscroll-behavior: contain;
 }
 
-/* Typography scale */
+/* Typography */
 .text-display {
   font-size: 2rem;
   font-weight: 700;
@@ -59,7 +67,7 @@ html {
   line-height: 1.4;
 }
 
-/* Reduced motion support */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -71,8 +79,8 @@ html {
 }
 
 body {
-  background: #ffffff;
-  color: #1E293B;
+  background: #F9FAFB;
+  color: #1F2937;
   min-height: 100dvh;
   overflow-x: hidden;
 }
@@ -82,11 +90,35 @@ body {
   max-width: 100%;
 }
 
-/* Hide scrollbar for filter chips */
+/* Hide scrollbar for filter chips etc. */
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 .scrollbar-none::-webkit-scrollbar {
   display: none;
+}
+
+/* Flip card perspective */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Safe area padding */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 0px);
+}
+
+/* Gauge ring */
+.gauge-ring {
+  transition: stroke-dashoffset 0.5s ease;
 }
