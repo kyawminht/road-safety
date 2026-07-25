@@ -26,7 +26,14 @@ export default function HomeDashboard({ onNavigate }) {
           paddingBottom: 'max(env(safe-area-inset-bottom, 0px) + 40px, 56px)',
         }}
       >
-        <div className="flex items-center" style={{ gap: 28 }}>
+        <div
+          className="flex items-center justify-center w-full"
+          style={{
+            boxSizing: 'border-box',
+            gap: 'clamp(10px, 3vw, 18px)',
+            padding: '0 20px',
+          }}
+        >
           {/* Rules Button */}
           <button
             type="button"
@@ -34,7 +41,7 @@ export default function HomeDashboard({ onNavigate }) {
             aria-label="Rules"
             className="flex items-center justify-center font-bold cursor-pointer active:scale-95 transition-transform duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             style={{
-              width: 160,
+              width: 'min(150px, calc((100vw - 76px) / 2))',
               height: 64,
               borderRadius: 18,
               backgroundColor: '#FFC83D',
@@ -53,7 +60,7 @@ export default function HomeDashboard({ onNavigate }) {
             aria-label="Game"
             className="flex items-center justify-center font-bold cursor-pointer active:scale-95 transition-transform duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             style={{
-              width: 160,
+              width: 'min(150px, calc((100vw - 76px) / 2))',
               height: 64,
               borderRadius: 18,
               backgroundColor: '#2FBF9B',
