@@ -5,6 +5,7 @@ import { HiArrowRight, HiDocumentText, HiClipboardDocumentList, HiUserGroup, HiB
 import { RULES, CATEGORIES, AGE_GROUPS } from '../data/rulebook.js';
 import { GRADES, getLessonsForGrade } from '../data/curriculum.js';
 import CreatorSection from '../components/CreatorSection.jsx';
+import ImageWithPlaceholder from '../components/ImageWithPlaceholder.jsx';
 
 const TOPIC_TABS = [
   { id: 'all', label: 'Overview' },
@@ -138,7 +139,7 @@ function RuleRow({ rule, index, color }) {
     >
       {/* Image on top */}
       <div className="aspect-[4/3] bg-gray-100 relative">
-        <img src={rule.image} alt={rule.text} className="w-full h-full object-cover" />
+        <ImageWithPlaceholder src={rule.image} alt={rule.text} className="w-full h-full object-cover" />
         <div className="absolute top-2 left-2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm" style={{ background: color, color: '#fff' }}>
           {index + 1}
         </div>

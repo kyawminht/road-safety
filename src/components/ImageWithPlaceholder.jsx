@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function ImageWithPlaceholder({ src, alt, className, style }) {
+export default function ImageWithPlaceholder({
+  src,
+  alt,
+  className,
+  style,
+  loading = 'lazy',
+  fetchPriority = 'auto',
+}) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
 
@@ -32,6 +39,9 @@ export default function ImageWithPlaceholder({ src, alt, className, style }) {
       <img
         src={src}
         alt={alt}
+        loading={loading}
+        decoding="async"
+        fetchPriority={fetchPriority}
         className={className}
         onLoad={() => setLoaded(true)}
         onError={() => setError(true)}

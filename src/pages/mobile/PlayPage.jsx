@@ -1,6 +1,7 @@
 import { useState, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { FiChevronRight, FiEye, FiMoon, FiNavigation, FiPlayCircle } from 'react-icons/fi';
+import CreatorSection from '../../components/CreatorSection.jsx';
 
 // Lazy-load existing games
 const BeBrightBeSeenGame = lazy(() => import('../Games/BeBrightBeSeen/BeBrightBeSeenGame.jsx'));
@@ -186,6 +187,10 @@ export default function PlayPage() {
         <p className="text-sm font-semibold text-road-gray-500">Road Crossing Simulator (Coming Soon)</p>
         <p className="text-xs text-road-gray-400 mt-1">2D Canvas road-crossing game — coming soon</p>
       </motion.div>
+
+      <div className="flex justify-center">
+        <CreatorSection />
+      </div>
 
       <div className="h-4" />
     </div>

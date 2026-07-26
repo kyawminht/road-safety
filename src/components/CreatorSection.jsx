@@ -5,21 +5,21 @@ export default function CreatorSection() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="mt-8 sm:mt-12 w-full max-w-md">
+    <div className="mt-8 sm:mt-12 w-full max-w-md md:max-w-2xl lg:max-w-3xl">
       {/* Card */}
       <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden w-full">
         {/* Toggle button */}
         <button
           onClick={() => setOpen((v) => !v)}
-          className="w-full flex items-center justify-between px-5 py-4"
+          className="w-full flex items-center justify-between px-5 py-4 md:px-6 md:py-5"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-teal-100 flex items-center justify-center">
               <span className="text-lg">👨‍💻</span>
             </div>
             <div className="text-left">
-              <p className="text-sm font-semibold text-gray-900">Meet the Creator</p>
-              <p className="text-xs text-gray-400">Tap to know more</p>
+              <p className="text-sm md:text-base font-semibold text-gray-900">Meet the Creator</p>
+              <p className="text-xs md:text-sm text-gray-400">Tap to know more</p>
             </div>
           </div>
           <motion.svg
@@ -44,9 +44,9 @@ export default function CreatorSection() {
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="overflow-hidden"
             >
-              <div className="px-5 pb-5 flex gap-4 items-start">
+              <div className="px-5 pb-5 md:px-6 md:pb-6 flex flex-col sm:flex-row gap-4 md:gap-6 items-start">
                 {/* Avatar */}
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-500 to-teal-700 p-0.5 shrink-0 shadow-lg">
+                <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl bg-gradient-to-br from-teal-500 to-teal-700 p-0.5 shrink-0 shadow-lg">
                   <div className="w-full h-full rounded-2xl bg-white overflow-hidden flex items-center justify-center">
                     <img
                       src="/creator.jpg"
@@ -58,19 +58,19 @@ export default function CreatorSection() {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-base font-bold text-gray-900">KYAW MIN HTWE</h3>
-                  <p className="text-sm text-teal-600 font-medium mt-0.5">Software Engineer</p>
-                  <p className="text-sm text-gray-500 mt-2 leading-relaxed">
+                  <h3 className="text-base md:text-xl font-bold text-gray-900">KYAW MIN HTWE</h3>
+                  <p className="text-sm md:text-base text-teal-600 font-medium mt-0.5">Software Engineer</p>
+                  <p className="text-sm md:text-base text-gray-500 mt-2 leading-relaxed max-w-xl">
                     A passionate Software Engineer who loves solving real-world problems through technology.
                   </p>
 
                   {/* Social links */}
-                  <div className="flex gap-2 mt-3">
+                  <div className="flex gap-2 md:gap-3 mt-3 md:mt-4">
                     <a
                       href="https://github.com/kyawminht"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-gray-200 transition-colors"
+                      className="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-gray-200 transition-colors"
                       aria-label="GitHub"
                     >
                       <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
@@ -81,7 +81,7 @@ export default function CreatorSection() {
                       href="https://www.linkedin.com/in/kyaw-min-htwe-99839b244/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-[#0077B5] hover:text-white transition-colors"
+                      className="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-[#0077B5] hover:text-white transition-colors"
                       aria-label="LinkedIn"
                     >
                       <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
@@ -90,7 +90,7 @@ export default function CreatorSection() {
                     </a>
                     <a
                       href="mailto:kyawminhtway288@gmail.com"
-                      className="w-9 h-9 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-teal-500 hover:text-white transition-colors"
+                      className="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-teal-500 hover:text-white transition-colors"
                       aria-label="Email"
                     >
                       <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
