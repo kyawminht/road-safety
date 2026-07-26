@@ -16,6 +16,7 @@ import quizUnsafeBus from '../../assets/quiz/unsafe-bus.png';
 import countdownSignal from '../../assets/quiz/count-down.jfif';
 import quizWrongFerry from '../../assets/quiz/wrong_ferry.png';
 import quizParkingPath from '../../assets/quiz/quiz.png';
+import quizPeterBasketball from '../../assets/quiz/q16.png';
 
 const COLORS = {
   background: '#F5F8F6',
@@ -359,7 +360,7 @@ const QUESTION_SETS = {
     question: 'Peter has just walked out of the toy store with a brand new basketball. As he is walking to his car with his mother, he drops the basketball in the parking lot. What should Peter do?',
     graded: false,
     options: [
-      { id: 'prompt', label: 'Think', text: 'Discuss with teacher', correct: true },
+      { id: 'prompt', label: 'Think', image: quizPeterBasketball, correct: true, accessibility: 'Peter drops a basketball in a parking lot while walking with his mother' },
     ],
   },
   {
