@@ -107,17 +107,12 @@ const MYANMAR_COPY = {
   'g45-q9': {
     topic: 'သင်ခန်းစာ ၂ - လမ်းလုံခြုံစွာ ဖြတ်ကူးခြင်း',
     question: 'လမ်းဖြတ်ကူးသောအခါ ဘယ်ဘက်ကို အရင်ကြည့်ပြီး၊ ညာဘက်ကို ကြည့်ကာ၊ ဘယ်ဘက်ကို ထပ်ကြည့်ရသည့် အကြောင်းကို ရှင်းပြပါ။',
-    options: { prompt: 'ဆရာ/ဆရာမနှင့် ဆွေးနွေးပါ' },
+    options: { prompt: 'ကားများ ဘေးနှစ်ဖက်မှ လာနိုင်သောကြောင့် လုံခြုံရန် ထပ်ကြည့်ရသည်။' },
   },
   'g45-q10': {
     topic: 'သင်ခန်းစာ ၂ - လမ်းလုံခြုံစွာ ဖြတ်ကူးခြင်း',
     question: 'လမ်းဖြတ်ကူးသောအခါ ဘယ်ဦးတည်ချက်အတိုင်း လမ်းလျှောက်သင့်သလဲ။',
     options: { a: 'တည့်တည့်', b: 'ဘေးတိုက်', c: 'ထောင့်ဖြတ်' },
-  },
-  'g45-q11': {
-    topic: 'သင်ခန်းစာ ၃ - လမ်းဆုံများတွင် လုံခြုံစွာ ဖြတ်ကူးခြင်း',
-    question: 'အောက်ပါအရာများအနက် ဘယ်ဟာကို လမ်းဆုံဟု သတ်မှတ်နိုင်သလဲ။',
-    options: { a: 'ပုံ A', b: 'ပုံ B', c: 'ပုံ C' },
   },
   'g45-q12': {
     topic: 'သင်ခန်းစာ ၃ - လမ်းဆုံများတွင် လုံခြုံစွာ ဖြတ်ကူးခြင်း',
@@ -141,7 +136,7 @@ const MYANMAR_COPY = {
   'g45-q17': {
     topic: 'သင်ခန်းစာ ၄ - ကားရပ်နားရာနေရာ လုံခြုံရေး',
     question: 'Peter သည် မိခင်နှင့်အတူ ကားဆီသို့ လမ်းလျှောက်နေစဉ် ဘတ်စကက်ဘောလုံးကို ကားရပ်နားရာနေရာတွင် ကျသွားသည်။ Peter ဘာလုပ်သင့်သလဲ။',
-    options: { prompt: 'ဆရာ/ဆရာမနှင့် ဆွေးနွေးပါ' },
+    options: { prompt: 'သူ့အမေကို ပြောပြီး ရပ်စောင့်ရမည်။ လူကြီးက လုံခြုံမှ ဘောလုံးကို ကောက်ပေးရမည်။' },
   },
   'g45-q18': {
     topic: 'သင်ခန်းစာ ၅ - ကျောင်းဘတ်စ်ကား လုံခြုံရေး',
@@ -288,8 +283,9 @@ const QUESTION_SETS = {
     topic: 'Lesson 2: Crossing Streets Safely',
     question: 'Explain why you should look left first, then right, and left again before crossing.',
     graded: false,
+    revealAnswer: true,
     options: [
-      { id: 'prompt', label: 'Think', text: 'Discuss with teacher', correct: true },
+      { id: 'prompt', label: 'Think', text: 'Cars can come from both sides, so look again to stay safe.', correct: true },
     ],
   },
   {
@@ -300,16 +296,6 @@ const QUESTION_SETS = {
       { id: 'a', label: 'A', text: 'straight', correct: true },
       { id: 'b', label: 'B', text: 'sideways', correct: false },
       { id: 'c', label: 'C', text: 'diagonal', correct: false },
-    ],
-  },
-  {
-    id: 'g45-q11',
-    topic: 'Lesson 3: Crossing Intersections Safely',
-    question: 'Which of the following would be considered an intersection?',
-    options: [
-      { id: 'a', label: 'A', text: 'Picture A', correct: false },
-      { id: 'b', label: 'B', text: 'Picture B', correct: false },
-      { id: 'c', label: 'C', text: 'Picture C', correct: true },
     ],
   },
   {
@@ -359,8 +345,16 @@ const QUESTION_SETS = {
     topic: 'Lesson 4: Parking Lot Safety',
     question: 'Peter has just walked out of the toy store with a brand new basketball. As he is walking to his car with his mother, he drops the basketball in the parking lot. What should Peter do?',
     graded: false,
+    revealAnswer: true,
     options: [
-      { id: 'prompt', label: 'Think', image: quizPeterBasketball, correct: true, accessibility: 'Peter drops a basketball in a parking lot while walking with his mother' },
+      {
+        id: 'prompt',
+        label: 'Think',
+        text: 'He should stop and tell his mother. An adult should get the ball only when it is safe.',
+        image: quizPeterBasketball,
+        correct: true,
+        accessibility: 'Peter drops a basketball in a parking lot while walking with his mother',
+      },
     ],
   },
   {
@@ -732,6 +726,14 @@ function getOptionText(question, option, language) {
   return language === 'my' ? MYANMAR_COPY[question.id]?.options?.[option.id] || option.text : option.text;
 }
 
+function getSeeAnswerLabel(language, isVisible = false) {
+  if (language === 'my') {
+    return isVisible ? 'အဖြေဖျောက်မည်' : 'အဖြေကြည့်မည်';
+  }
+
+  return isVisible ? 'Hide answer' : 'See answer';
+}
+
 function getLessonLabel(question, language) {
   const topic = getQuestionTopic(question, language);
   const lessonNumber = topic.match(/[0-9၁၂၃၄၅]+/)?.[0];
@@ -911,6 +913,8 @@ function ImageAnswerOption({
 function ResponseSheetQuestion({ question, index, selectedAnswer, onSelect, language, isDesktopView }) {
   const [showAnswerOverlay, setShowAnswerOverlay] = useState(false);
   const visibleOptions = question.options.filter((option) => option.id !== 'prompt' || option.image);
+  const promptOption = question.revealAnswer ? question.options.find((option) => option.id === 'prompt') : null;
+  const [showPromptAnswer, setShowPromptAnswer] = useState(false);
   const hasImageOptions = visibleOptions.some((option) => option.image);
   const hasAnswerOverlay = question.answerOverlay === 'parkingFootpath';
   const showFeedback = question.graded !== false && Boolean(selectedAnswer);
@@ -1029,14 +1033,51 @@ function ResponseSheetQuestion({ question, index, selectedAnswer, onSelect, lang
             fontSize: 13,
           }}
         >
-          {showAnswerOverlay ? 'Hide answer' : 'See answer'}
+          {getSeeAnswerLabel(language, showAnswerOverlay)}
         </button>
+      )}
+      {promptOption && (
+        <div className="mt-4">
+          <button
+            type="button"
+            onClick={() => setShowPromptAnswer((isVisible) => !isVisible)}
+            className="inline-flex items-center justify-center font-black"
+            style={{
+              minHeight: 42,
+              borderRadius: 12,
+              border: '1px solid #16A34A',
+              backgroundColor: showPromptAnswer ? '#DCFCE7' : '#FFFFFF',
+              color: COLORS.primaryGreen,
+              padding: '0 18px',
+              fontSize: 13,
+            }}
+          >
+            {getSeeAnswerLabel(language, showPromptAnswer)}
+          </button>
+          {showPromptAnswer && (
+            <div
+              className="mt-3 font-bold"
+              style={{
+                borderRadius: 12,
+                border: `1px solid ${COLORS.border}`,
+                backgroundColor: '#FFFFFF',
+                color: COLORS.primaryText,
+                padding: '14px 16px',
+                fontSize: 14,
+                lineHeight: 1.45,
+              }}
+            >
+              {getOptionText(question, promptOption, language)}
+            </div>
+          )}
+        </div>
       )}
     </motion.section>
   );
 }
 
 function QuizResults({ score, total, responses, onRetake, onHome }) {
+  const isDesktopView = useIsDesktopQuizView();
   const percent = total > 0 ? Math.round((score / total) * 100) : 0;
   const needsReview = responses.filter((response) => response.graded && !response.correct);
 
@@ -1046,6 +1087,9 @@ function QuizResults({ score, total, responses, onRetake, onHome }) {
       style={{
         backgroundColor: COLORS.background,
         padding: 'max(env(safe-area-inset-top, 0px) + 24px, 34px) 20px max(env(safe-area-inset-bottom, 0px) + 24px, 34px)',
+        display: isDesktopView ? undefined : 'flex',
+        alignItems: isDesktopView ? undefined : 'center',
+        justifyContent: isDesktopView ? undefined : 'center',
       }}
     >
       <motion.div
@@ -1053,6 +1097,8 @@ function QuizResults({ score, total, responses, onRetake, onHome }) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="text-center"
         style={{
+          width: '100%',
+          maxWidth: isDesktopView ? undefined : 420,
           borderRadius: 24,
           backgroundColor: COLORS.cardBackground,
           padding: 22,
@@ -1144,6 +1190,7 @@ export default function QuizScreen({ onComplete }) {
   const [direction, setDirection] = useState(1);
   const [finished, setFinished] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showPromptAnswer, setShowPromptAnswer] = useState(false);
 
   const questions = QUESTION_SETS[ageGroup];
   const activeAgeGroup = AGE_GROUPS.find((group) => group.id === ageGroup);
@@ -1151,10 +1198,14 @@ export default function QuizScreen({ onComplete }) {
   const totalQ = questions.length;
   const isLast = currentQ === totalQ - 1;
   const hasImageOptions = question.options.some((option) => option.image);
+  const promptAnswerOption = question.revealAnswer && question.options.length === 1 && question.options[0].id === 'prompt'
+    ? question.options[0]
+    : null;
   const selectedCount = Object.keys(answers).length;
   const savedAnswer = answers[currentQ]?.selected ?? null;
   const visibleAnswer = selectedAnswer ?? savedAnswer;
   const visibleFeedback = showFeedback || Boolean(savedAnswer);
+  const isPromptAnswerVisible = Boolean(promptAnswerOption && (showPromptAnswer || savedAnswer));
   const canContinueAnsweredQuestion = Boolean(savedAnswer);
 
   const responses = useMemo(() => {
@@ -1226,6 +1277,7 @@ export default function QuizScreen({ onComplete }) {
     setDirection(1);
     setFinished(false);
     setShowFeedback(false);
+    setShowPromptAnswer(false);
   }, []);
 
   const handleLanguageChange = useCallback((nextLanguage) => {
@@ -1251,6 +1303,7 @@ export default function QuizScreen({ onComplete }) {
     setCurrentQ((prev) => prev + 1);
     setSelectedAnswer(null);
     setShowFeedback(false);
+    setShowPromptAnswer(false);
   }, [isLast]);
 
   const handleSelect = useCallback((optionId) => {
@@ -1276,6 +1329,24 @@ export default function QuizScreen({ onComplete }) {
 
     advanceTimerRef.current = window.setTimeout(advanceQuestion, 950);
   }, [advanceQuestion, answers, currentQ, question, showFeedback]);
+
+  const handleSeePromptAnswer = useCallback(() => {
+    if (!promptAnswerOption) return;
+
+    setShowPromptAnswer(true);
+
+    if (answers[currentQ] !== undefined) return;
+
+    setSelectedAnswer(promptAnswerOption.id);
+    setAnswers((prev) => ({
+      ...prev,
+      [currentQ]: {
+        questionId: question.id,
+        selected: promptAnswerOption.id,
+        correct: Boolean(promptAnswerOption.correct),
+      },
+    }));
+  }, [answers, currentQ, promptAnswerOption, question.id]);
 
   const handleSheetSelect = useCallback((questionIndex, optionId) => {
     if (answers[questionIndex] !== undefined) return;
@@ -1436,9 +1507,11 @@ export default function QuizScreen({ onComplete }) {
           {getQuestionText(question, language)}
         </h1>
         <p className="text-road-gray-500 mt-2" style={{ fontSize: 13 }}>
-          {language === 'my'
-            ? 'ပုံတစ်ပုံကို ရွေးပါ။ သင့်အဖြေကို ဆရာ/ဆရာမအတွက် သိမ်းဆည်းမည်။'
-            : hasImageOptions
+          {promptAnswerOption
+            ? language === 'my' ? 'အဖြေကို ကြည့်ပြီးနောက် ဆက်သွားနိုင်ပါသည်။' : 'Tap See answer, then continue.'
+            : language === 'my'
+              ? 'ပုံတစ်ပုံကို ရွေးပါ။ သင့်အဖြေကို ဆရာ/ဆရာမအတွက် သိမ်းဆည်းမည်။'
+              : hasImageOptions
               ? 'Tap one picture. Your answer will be saved for your teacher.'
               : 'Choose one answer. Your response will be saved for your teacher.'}
         </p>
@@ -1470,18 +1543,92 @@ export default function QuizScreen({ onComplete }) {
               initial="hidden"
               animate="visible"
             >
-              {question.options.map((option) => (
-                <ImageAnswerOption
-                  key={option.id}
-                  option={{ ...option, displayText: getOptionText(question, option, language) }}
-                  isSelected={visibleAnswer === option.id}
-                  isCorrect={option.correct}
-                  showFeedback={question.graded !== false && visibleFeedback}
-                  onSelect={handleSelect}
-                  disabled={visibleFeedback || answers[currentQ] !== undefined}
-                  desktopImage={isDesktopQuizView}
-                />
-              ))}
+              {promptAnswerOption ? (
+                <motion.div
+                  variants={cardVariants}
+                  className="w-full"
+                  style={{
+                    maxWidth: isDesktopQuizView ? 560 : undefined,
+                    margin: isDesktopQuizView ? '0 auto' : undefined,
+                  }}
+                >
+                  {promptAnswerOption.image && (
+                    <div
+                      style={{
+                        width: '100%',
+                        height: isDesktopQuizView ? 'clamp(300px, 48vh, 440px)' : 230,
+                        borderRadius: 16,
+                        border: `1px solid ${COLORS.border}`,
+                        backgroundColor: '#FFFFFF',
+                        overflow: 'hidden',
+                        boxShadow: '0 6px 16px rgba(31, 41, 55, 0.06)',
+                        marginBottom: 14,
+                      }}
+                    >
+                      <img
+                        src={promptAnswerOption.image}
+                        alt={promptAnswerOption.accessibility || ''}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'contain',
+                          backgroundColor: '#F8FBF9',
+                        }}
+                      />
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleSeePromptAnswer}
+                    disabled={isPromptAnswerVisible}
+                    className="w-full font-black"
+                    style={{
+                      minHeight: 52,
+                      borderRadius: 16,
+                      border: '1px solid #16A34A',
+                      backgroundColor: isPromptAnswerVisible ? '#DCFCE7' : '#FFFFFF',
+                      color: COLORS.primaryGreen,
+                      fontSize: 14,
+                      boxShadow: '0 6px 16px rgba(20, 122, 79, 0.10)',
+                    }}
+                  >
+                    {getSeeAnswerLabel(language, isPromptAnswerVisible)}
+                  </button>
+                  {isPromptAnswerVisible && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, ease: 'easeOut' }}
+                      className="mt-4 font-bold"
+                      style={{
+                        borderRadius: 14,
+                        border: `1px solid ${COLORS.border}`,
+                        backgroundColor: '#FFFFFF',
+                        color: COLORS.primaryText,
+                        padding: '16px 18px',
+                        fontSize: 15,
+                        lineHeight: 1.45,
+                        boxShadow: '0 6px 16px rgba(31, 41, 55, 0.06)',
+                      }}
+                    >
+                      {getOptionText(question, promptAnswerOption, language)}
+                    </motion.div>
+                  )}
+                </motion.div>
+              ) : (
+                question.options.map((option) => (
+                  <ImageAnswerOption
+                    key={option.id}
+                    option={{ ...option, displayText: getOptionText(question, option, language) }}
+                    isSelected={visibleAnswer === option.id}
+                    isCorrect={option.correct}
+                    showFeedback={question.graded !== false && visibleFeedback}
+                    onSelect={handleSelect}
+                    disabled={visibleFeedback || answers[currentQ] !== undefined}
+                    desktopImage={isDesktopQuizView}
+                  />
+                ))
+              )}
             </motion.div>
             {canContinueAnsweredQuestion && (
               <div

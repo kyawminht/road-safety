@@ -155,7 +155,7 @@
   align-items: flex-end;
   justify-content: center;
   padding: 12px;
-  padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 92px);
   background: rgba(0, 0, 0, 0.35);
   pointer-events: auto;
 }
