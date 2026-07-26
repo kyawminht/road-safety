@@ -1,84 +1,61 @@
+import { FiBookOpen, FiEdit3, FiHome, FiPlayCircle } from 'react-icons/fi';
+
 const TABS = [
-  { id: 'home', label: 'Home', icon: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-      <polyline points="9 22 9 12 15 12 15 22" />
-    </svg>
-  )},
-  { id: 'rules', label: 'Rules', icon: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-    </svg>
-  )},
-  { id: 'quiz', label: 'Quiz', icon: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-      <line x1="12" y1="17" x2="12.01" y2="17" />
-    </svg>
-  )},
-  { id: 'game', label: 'Game', icon: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="6" y1="12" x2="10" y2="12" />
-      <line x1="8" y1="10" x2="8" y2="14" />
-      <line x1="15" y1="13" x2="15.01" y2="13" />
-      <line x1="18" y1="11" x2="18.01" y2="11" />
-      <rect x="2" y="6" width="20" height="12" rx="2" />
-    </svg>
-  )},
+  { id: 'home', label: 'Home', icon: FiHome },
+  { id: 'rules', label: 'Rules', icon: FiBookOpen },
+  { id: 'quiz', label: 'Response', icon: FiEdit3 },
+  { id: 'game', label: 'Games', icon: FiPlayCircle },
 ];
 
 const COLORS = {
   primaryGreen: '#147A4F',
-  primaryText: '#2B2B2B',
-  secondaryText: '#7A817D',
-  border: '#E6EAE8',
-  inactiveNav: '#DDE3E0',
+  primaryText: '#1F2937',
+  secondaryText: '#6B7280',
+  border: '#E1E8E4',
   sidebarBg: '#FFFFFF',
 };
 
 export default function DesktopSidebar({ activeTab, onTabChange }) {
   return (
     <nav
-      className="flex flex-col border-r"
+      className="shrink-0 flex flex-col border-r"
       style={{
-        width: 140,
+        width: 220,
         backgroundColor: COLORS.sidebarBg,
         borderColor: COLORS.border,
-        paddingTop: 24,
-        paddingBottom: 24,
-        flexShrink: 0,
-        position: 'sticky',
-        top: 0,
-        height: '100vh',
+        padding: 20,
+        height: '100dvh',
       }}
     >
-      {/* Logo */}
-      <div
-        className="flex items-center justify-center"
-        style={{
-          height: 40,
-          marginBottom: 32,
-          paddingLeft: 16,
-          paddingRight: 16,
-        }}
-      >
+      <div className="flex items-center gap-3" style={{ padding: '6px 6px 26px' }}>
         <div
+          className="flex items-center justify-center font-black"
           style={{
-            width: 28,
-            height: 28,
-            borderRadius: '50%',
+            width: 42,
+            height: 42,
+            borderRadius: 14,
             backgroundColor: COLORS.primaryGreen,
+            color: '#FFD84D',
+            fontSize: 18,
           }}
           aria-hidden="true"
-        />
+        >
+          RS
+        </div>
+        <div>
+          <div className="font-black" style={{ color: COLORS.primaryText, fontSize: 15, lineHeight: 1.1 }}>
+            Road Safety
+          </div>
+          <div className="font-bold" style={{ color: COLORS.secondaryText, fontSize: 11, marginTop: 3 }}>
+            School curriculum
+          </div>
+        </div>
       </div>
 
-      {/* Nav items */}
-      <div className="flex flex-col" style={{ gap: 4, paddingLeft: 12, paddingRight: 12 }}>
+      <div className="flex flex-col" style={{ gap: 6 }}>
         {TABS.map((tab) => {
           const isActive = activeTab === tab.id;
+          const Icon = tab.icon;
           return (
             <button
               key={tab.id}
@@ -86,30 +63,50 @@ export default function DesktopSidebar({ activeTab, onTabChange }) {
               onClick={() => onTabChange(tab.id)}
               className="flex items-center gap-3 transition-colors duration-150"
               style={{
-                height: 40,
-                borderRadius: 10,
-                paddingLeft: 12,
-                paddingRight: 12,
+                height: 46,
+                borderRadius: 14,
+                paddingLeft: 13,
+                paddingRight: 13,
                 backgroundColor: isActive ? COLORS.primaryGreen : 'transparent',
                 color: isActive ? '#FFFFFF' : COLORS.primaryText,
                 cursor: 'pointer',
               }}
             >
-              <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
-                {tab.icon}
-              </span>
               <span
-                className="font-semibold"
+                className="flex items-center justify-center"
                 style={{
-                  fontSize: 13,
-                  lineHeight: 1,
+                  width: 24,
+                  height: 24,
+                  flexShrink: 0,
+                  color: isActive ? '#FFD84D' : COLORS.secondaryText,
                 }}
+                aria-hidden="true"
               >
+                <Icon size={18} />
+              </span>
+              <span className="font-bold" style={{ fontSize: 14, lineHeight: 1 }}>
                 {tab.label}
               </span>
             </button>
           );
         })}
+      </div>
+
+      <div
+        style={{
+          marginTop: 'auto',
+          borderRadius: 18,
+          backgroundColor: '#F5F8F6',
+          border: `1px solid ${COLORS.border}`,
+          padding: 14,
+        }}
+      >
+        <div className="font-black" style={{ color: COLORS.primaryText, fontSize: 13 }}>
+          Teacher note
+        </div>
+        <p className="font-semibold" style={{ color: COLORS.secondaryText, fontSize: 12, lineHeight: 1.45, marginTop: 6 }}>
+          Use Response to review wrong and correct picture-card answers.
+        </p>
       </div>
     </nav>
   );

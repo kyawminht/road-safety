@@ -14,7 +14,7 @@ const ACTIONS = [
   {
     id: 'game',
     label: 'Play Games',
-    helper: 'Practice safely',
+    helper: 'Practice',
     icon: FiPlayCircle,
     background: '#24BFA3',
     color: '#FFFFFF',
@@ -22,7 +22,7 @@ const ACTIONS = [
   {
     id: 'quiz',
     label: 'Student Response',
-    helper: 'Tell teacher',
+    helper: 'Picture quiz',
     icon: FiEdit3,
     background: '#FFFFFF',
     color: '#147A4F',
@@ -51,7 +51,7 @@ export default function HomeDashboard({ onNavigate }) {
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 45%, rgba(20,122,79,0.72) 100%)',
+            'linear-gradient(180deg, rgba(15,23,42,0.18) 0%, rgba(15,23,42,0.02) 34%, rgba(15,23,42,0) 52%, rgba(20,92,66,0.78) 100%)',
         }}
       />
 
@@ -60,31 +60,53 @@ export default function HomeDashboard({ onNavigate }) {
         className="absolute left-0 right-0"
         style={{
           top: 'max(env(safe-area-inset-top, 0px) + 20px, 30px)',
-          paddingLeft: 20,
-          paddingRight: 20,
+          paddingLeft: 22,
+          paddingRight: 22,
         }}
       >
-        <p className="font-bold text-white drop-shadow" style={{ fontSize: 15 }}>
-          Road Safety Curriculum
-        </p>
-        <h1
-          className="font-black text-white drop-shadow"
-          style={{ fontSize: 34, lineHeight: 1.05, maxWidth: 280 }}
+        <div
+          style={{
+            display: 'inline-block',
+            maxWidth: 270,
+            borderRadius: 18,
+            padding: '12px 14px',
+            backgroundColor: 'rgba(15, 23, 42, 0.72)',
+            boxShadow: '0 12px 28px rgba(15, 23, 42, 0.22)',
+            backdropFilter: 'blur(6px)',
+          }}
         >
-          Learn. Practice. Report.
-        </h1>
+          <h1
+            className="font-black"
+            style={{ fontSize: 28, lineHeight: 1.03, maxWidth: 230, color: '#FFD84D' }}
+          >
+            Road Safety
+          </h1>
+          <p className="font-bold mt-1" style={{ fontSize: 12, lineHeight: 1.35, maxWidth: 220, color: '#FFF3BF' }}>
+            Learn before you cross.
+          </p>
+        </div>
       </div>
 
       {/* ── Bottom Action Buttons ── */}
       <div
         className="absolute bottom-0 left-0 right-0"
         style={{
-          paddingLeft: 18,
-          paddingRight: 18,
-          paddingBottom: 'max(env(safe-area-inset-bottom, 0px) + 14px, 22px)',
+          paddingLeft: 16,
+          paddingRight: 16,
+          paddingBottom: 'max(env(safe-area-inset-bottom, 0px) + 12px, 18px)',
         }}
       >
-        <div className="grid gap-3" style={{ gridTemplateColumns: '1fr 1fr' }}>
+        <div
+          className="grid gap-3"
+          style={{
+            gridTemplateColumns: '1fr 1fr',
+            padding: 12,
+            borderRadius: 24,
+            backgroundColor: 'rgba(255,255,255,0.20)',
+            boxShadow: '0 18px 42px rgba(15, 23, 42, 0.20)',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
           {ACTIONS.slice(0, 2).map((action) => {
             const Icon = action.icon;
             return (
@@ -94,12 +116,12 @@ export default function HomeDashboard({ onNavigate }) {
                 onClick={() => onNavigate(action.id)}
                 className="flex items-center gap-3 font-bold cursor-pointer active:scale-95 transition-transform duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 style={{
-                  minHeight: 74,
-                  borderRadius: 18,
+                  minHeight: 76,
+                  borderRadius: 16,
                   backgroundColor: action.background,
                   color: action.color,
-                  padding: '12px 14px',
-                  boxShadow: '0 12px 28px rgba(0, 0, 0, 0.22)',
+                  padding: '12px',
+                  boxShadow: '0 10px 24px rgba(15, 23, 42, 0.18)',
                 }}
               >
                 <span
@@ -115,10 +137,10 @@ export default function HomeDashboard({ onNavigate }) {
                   <Icon size={21} />
                 </span>
                 <span className="min-w-0 text-left">
-                  <span className="block" style={{ fontSize: 16, lineHeight: 1.15 }}>
+                  <span className="block" style={{ fontSize: 15, lineHeight: 1.12 }}>
                     {action.label}
                   </span>
-                  <span className="block font-semibold opacity-75" style={{ fontSize: 11 }}>
+                  <span className="block font-bold opacity-70" style={{ fontSize: 9, lineHeight: 1.25, marginTop: 3 }}>
                     {action.helper}
                   </span>
                 </span>
@@ -130,12 +152,12 @@ export default function HomeDashboard({ onNavigate }) {
             onClick={() => onNavigate(ACTIONS[2].id)}
             className="col-span-2 flex items-center gap-3 font-bold cursor-pointer active:scale-95 transition-transform duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             style={{
-              minHeight: 64,
-              borderRadius: 18,
+              minHeight: 66,
+              borderRadius: 16,
               backgroundColor: ACTIONS[2].background,
               color: ACTIONS[2].color,
-              padding: '12px 14px',
-              boxShadow: '0 12px 28px rgba(0, 0, 0, 0.20)',
+              padding: '12px',
+              boxShadow: '0 10px 24px rgba(15, 23, 42, 0.16)',
             }}
           >
             <span
@@ -151,10 +173,10 @@ export default function HomeDashboard({ onNavigate }) {
               <FiEdit3 size={21} />
             </span>
             <span className="min-w-0 text-left">
-              <span className="block" style={{ fontSize: 16, lineHeight: 1.15 }}>
+              <span className="block" style={{ fontSize: 15, lineHeight: 1.15 }}>
                 {ACTIONS[2].label}
               </span>
-              <span className="block font-semibold opacity-75" style={{ fontSize: 11 }}>
+              <span className="block font-bold opacity-70" style={{ fontSize: 10, lineHeight: 1.25, marginTop: 3 }}>
                 {ACTIONS[2].helper}
               </span>
             </span>
