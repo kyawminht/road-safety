@@ -1,21 +1,13 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
-import OnboardingPage from './pages/mobile/OnboardingPage.jsx';
-import HomePage from './pages/mobile/HomePage.jsx';
 import HomeDashboard from './pages/mobile/HomeDashboard.jsx';
 import RulesScreen from './pages/mobile/RulesScreen.jsx';
 import LearnPage from './pages/mobile/LearnPage.jsx';
-import QuizPage from './pages/mobile/QuizPage.jsx';
 import QuizScreen from './pages/mobile/QuizScreen.jsx';
-import ProgressPage from './pages/mobile/ProgressPage.jsx';
 import PlayPage from './pages/mobile/PlayPage.jsx';
 import MobileNav from './components/layout/MobileNav.jsx';
 import DesktopSidebar from './components/layout/DesktopSidebar.jsx';
-import TeacherDashboard from './pages/desktop/teacher/DashboardPage.jsx';
-import TeacherSidebar from './components/desktop/TeacherSidebar.jsx';
-import ParentDashboard from './pages/desktop/parent/DashboardPage.jsx';
-import ParentSidebar from './components/desktop/ParentSidebar.jsx';
 import DesktopHomePage from './pages/desktop/Home/DesktopHomePage.jsx';
 
 function useIsMobile() {
@@ -28,40 +20,13 @@ function useIsMobile() {
   return isMobile;
 }
 
-function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
-  useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  return isDesktop;
-}
-
-const DESKTOP_TABS = {
-  teacher: ['dashboard', 'classes', 'content', 'assessments', 'reports'],
-  parent: ['dashboard', 'history', 'resources'],
-};
-
 function AppContent() {
-  const { role, isAuthenticated, loading } = useAuth();
+  const { loading } = useAuth();
   const isMobile = useIsMobile();
-  const isDesktop = useIsDesktop();
 
   // App state
-  const [onboarded, setOnboarded] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [filterTopic, setFilterTopic] = useState(null);
-  const [desktopTab, setDesktopTab] = useState('dashboard');
-
-  // Handle onboarding complete
-  const handleOnboarding = useCallback((selectedRole) => {
-    setOnboarded(true);
-    // For desktop teacher/parent, show desktop layout
-    if (!isMobile && (selectedRole === 'teacher' || selectedRole === 'parent')) {
-      setDesktopTab('dashboard');
-    }
-  }, [isMobile]);
 
   // Navigate handler (from HomePage quick actions)
   const handleNavigate = useCallback((target, topicId) => {
@@ -158,12 +123,12 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col bg-road-white w-full">
+    <div className="h-dvh max-h-dvh flex flex-col overflow-hidden bg-road-white w-full">
       {/* ── Desktop: Sidebar + Content row ── */}
       {!isMobile ? (
         <div className="flex-1 flex flex-row overflow-hidden w-full">
           <DesktopSidebar activeTab={activeTab} onTabChange={setActiveTab} />
-          <div className="flex-1 flex flex-col overflow-hidden w-full">
+          <div className="flex-1 min-h-0 flex flex-col overflow-hidden w-full">
             {renderPage()}
           </div>
         </div>
@@ -175,7 +140,7 @@ function AppContent() {
           </div>
 
           {/* ── Mobile: Bottom nav ── */}
-          {activeTab !== 'assess' && activeTab !== 'quiz' && (
+          {activeTab !== 'assess' && (
             <MobileNav activeTab={activeTab} onTabChange={setActiveTab} />
           )}
         </>

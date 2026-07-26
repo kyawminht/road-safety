@@ -1,5 +1,6 @@
 import { useState, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
+import { FiChevronRight, FiEye, FiMoon, FiNavigation, FiPlayCircle } from 'react-icons/fi';
 
 // Lazy-load existing games
 const BeBrightBeSeenGame = lazy(() => import('../Games/BeBrightBeSeen/BeBrightBeSeenGame.jsx'));
@@ -11,28 +12,31 @@ const GAMES = [
     id: 'pedestrian-first',
     title: 'Crossing Roads',
     subtitle: 'Pedestrian First',
-    emoji: '🚶',
+    icon: FiNavigation,
     color: 'from-road-green-dark to-road-green',
     textColor: 'text-white',
-    desc: 'Stop, Look, Listen, Cross — Learn how to cross safely',
+    action: 'Start crossing practice',
+    desc: 'Stop, look, listen, then cross safely.',
   },
   {
     id: 'be-bright',
     title: 'Be Bright',
     subtitle: 'Wear Bright Clothes',
-    emoji: '✨',
+    icon: FiMoon,
     color: 'from-road-yellow to-orange-400',
     textColor: 'text-road-black',
-    desc: 'What to wear so you can be seen at night',
+    action: 'Start night safety',
+    desc: 'Choose clothes drivers can see at night.',
   },
   {
     id: 'spot-danger',
     title: 'Spot Danger',
     subtitle: 'Find Danger on the Road',
-    emoji: '🔍',
+    icon: FiEye,
     color: 'from-road-red to-road-red-dark',
     textColor: 'text-white',
-    desc: 'Find the dangerous spots in the picture',
+    action: 'Start danger hunt',
+    desc: 'Tap the unsafe places in the scene.',
   },
 ];
 
@@ -119,39 +123,56 @@ export default function PlayPage() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
+        className="mb-5"
       >
-        <h1 className="text-heading text-road-black">Games</h1>
-        <p className="text-road-gray-400 text-sm">Learn while you play</p>
+        <h1 className="text-heading text-road-black">Practice Games</h1>
+        <p className="text-road-gray-500 text-sm">Pick one safety skill to practice.</p>
       </motion.div>
 
       {/* Game cards */}
       <div className="space-y-4">
-        {GAMES.map((game, i) => (
-          <motion.button
-            key={game.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 * i }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setSelectedGame(game.id)}
-            className={`w-full rounded-2xl overflow-hidden text-left ${game.textColor}`}
-          >
-            <div className={`bg-gradient-to-br ${game.color} p-5`}>
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="text-3xl mb-2">{game.emoji}</div>
-                  <div className="font-bold text-lg">{game.title}</div>
-                  <div className={`text-sm opacity-70 ${game.textColor}`}>{game.subtitle}</div>
+        {GAMES.map((game, i) => {
+          const Icon = game.icon;
+          return (
+            <motion.button
+              key={game.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * i }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setSelectedGame(game.id)}
+              className={`w-full rounded-2xl overflow-hidden text-left ${game.textColor} shadow-sm`}
+            >
+              <div className={`bg-gradient-to-br ${game.color} p-4`}>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span
+                      className="flex items-center justify-center shrink-0"
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 14,
+                        backgroundColor: 'rgba(255,255,255,0.24)',
+                      }}
+                      aria-hidden="true"
+                    >
+                      <Icon size={23} />
+                    </span>
+                    <div className="min-w-0">
+                      <div className="font-bold text-lg leading-tight">{game.title}</div>
+                      <div className={`text-sm opacity-80 ${game.textColor}`}>{game.subtitle}</div>
+                    </div>
+                  </div>
+                  <FiChevronRight className="shrink-0 opacity-70" size={22} aria-hidden="true" />
                 </div>
-                <span className="text-2xl opacity-30">🎮</span>
               </div>
-            </div>
-            <div className="bg-road-gray-50 p-3">
-              <p className="text-xs text-road-gray-500">{game.desc}</p>
-            </div>
-          </motion.button>
-        ))}
+              <div className="bg-road-gray-50 p-3 flex items-center justify-between gap-3">
+                <p className="text-xs text-road-gray-500">{game.desc}</p>
+                <span className="text-xs font-bold text-road-green-dark whitespace-nowrap">{game.action}</span>
+              </div>
+            </motion.button>
+          );
+        })}
       </div>
 
       {/* Road crossing simulator placeholder */}
@@ -161,7 +182,7 @@ export default function PlayPage() {
         transition={{ delay: 0.4 }}
         className="mt-6 p-4 rounded-2xl border-2 border-dashed border-road-gray-300 text-center"
       >
-        <div className="text-2xl mb-2">🚦</div>
+        <FiPlayCircle className="mx-auto mb-2 text-road-gray-400" size={24} aria-hidden="true" />
         <p className="text-sm font-semibold text-road-gray-500">Road Crossing Simulator (Coming Soon)</p>
         <p className="text-xs text-road-gray-400 mt-1">2D Canvas road-crossing game — coming soon</p>
       </motion.div>

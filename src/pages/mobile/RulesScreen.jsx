@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CATEGORIES, RULES } from '../../data/rulebook.js';
 
@@ -191,7 +191,7 @@ function RuleCardMobile({ rule, categoryColor, onNavigate }) {
 }
 
 /* ── Desktop: Shopping card (vertical) ── */
-function RuleCardDesktop({ rule, categoryColor, onNavigate }) {
+function RuleCardDesktop({ rule, onNavigate }) {
   return (
     <motion.button
       variants={cardVariants}
@@ -260,20 +260,14 @@ function RuleCardDesktop({ rule, categoryColor, onNavigate }) {
 /* ── Main Screen ── */
 
 export default function RulesScreen({ onNavigate }) {
-  const [language, setLanguage] = useState('EN');
+  const language = 'EN';
   const [activeCategory, setActiveCategory] = useState('All');
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
-
-  const langKey = language === 'EN' ? 'en' : 'mm';
 
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const toggleLanguage = useCallback(() => {
-    setLanguage((prev) => (prev === 'EN' ? 'MM' : 'EN'));
   }, []);
 
   const categoryColorMap = useMemo(() => {
@@ -289,7 +283,7 @@ export default function RulesScreen({ onNavigate }) {
 
   return (
     <div
-      className="min-h-dvh flex flex-col"
+      className="h-full min-h-0 flex flex-col"
       style={{ backgroundColor: COLORS.background }}
     >
       {/* ── Status bar ── */}
@@ -317,7 +311,6 @@ export default function RulesScreen({ onNavigate }) {
                   <RuleCardDesktop
                     key={rule.category + rule.text}
                     rule={rule}
-                    categoryColor={categoryColorMap[rule.category]}
                     onNavigate={onNavigate}
                   />
                 ) : (
