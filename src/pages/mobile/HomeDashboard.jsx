@@ -79,10 +79,10 @@ export default function HomeDashboard({ onNavigate }) {
             className="font-black"
             style={{ fontSize: 28, lineHeight: 1.03, maxWidth: 230, color: '#FFD84D' }}
           >
-            Road Safety
+            Road Safety for Myanmar
           </h1>
           <p className="font-bold mt-1" style={{ fontSize: 12, lineHeight: 1.35, maxWidth: 220, color: '#FFF3BF' }}>
-            Learn before you cross.
+            Learn before you cross. လမ်းအန္တရာယ်ကင်းရှင်းရေး
           </p>
         </div>
       </div>

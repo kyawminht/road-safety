@@ -38,6 +38,26 @@ export default function DesktopHomePage({ onNavigate }) {
       }}
     >
       <div className="mx-auto" style={{ maxWidth: 1100 }}>
+        <header style={{ marginBottom: 18 }}>
+          <h1
+            className="font-black"
+            style={{ fontSize: 30, lineHeight: 1.15, color: '#0F1A2E', margin: 0 }}
+          >
+            Road Safety for Myanmar
+          </h1>
+          <p
+            className="font-bold"
+            style={{ fontSize: 16, color: '#147A4F', marginTop: 6 }}
+          >
+            မြန်မာကလေးများအတွက် လမ်းအန္တရာယ်ကင်းရှင်းရေး သင်ယူရေး
+          </p>
+          <p style={{ fontSize: 14, lineHeight: 1.7, color: '#475569', marginTop: 8, maxWidth: 760 }}>
+            Road safety and traffic safety lessons for children in Myanmar: pedestrian safety,
+            motorcycle safety, bicycle safety and three-wheeler safety, taught with interactive
+            simulators and printable flashcards.
+          </p>
+        </header>
+
         <section
           style={{
             borderRadius: 24,

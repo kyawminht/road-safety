@@ -79,15 +79,15 @@ export const CATEGORIES = [
 export const RULES = [
   // ── Walking / KG-G2 ──
   { category: 'walking', ageGroup: 'kg-g2', image: sidewalk, wrongImage: WrongWalk, rightImage: RightWalk, text: 'လူသွားစင်္ကြံပေါ်မှာပဲ လျှောက်ပါ' },
-  { category: 'walking', ageGroup: 'kg-g2', image: holdhand, wrongImage: WrongImage, rightImage: RightImage, text: 'လူကြီးလက်ကို ကိုင်ထားပါ' },
-  { category: 'walking', ageGroup: 'kg-g2', image: playground, wrongImage: WrongGroup, rightImage: RightGroup, text: 'ကားလမ်းပေါ် မပြေးရ' },
+  { category: 'walking', ageGroup: 'kg-g2', image: holdhand, wrongImage: WrongImage, rightImage: RightImage, text: 'လမ်းကူးလျှင် လူကြီးလက်ကို ကိုင်ထားပါ' },
+  { category: 'walking', ageGroup: 'kg-g2', image: playground, wrongImage: WrongGroup, rightImage: RightGroup, text: 'ကားလမ်းပေါ် မကစားပါနှင့်' },
   { category: 'walking', ageGroup: 'kg-g2', image: zebra, text: 'လူကူးမျဉ်းကျားကနေပဲ ကူးပါ' },
   // ── Walking / G3-G5 ──
   { category: 'walking', ageGroup: 'g3-g5', image: walking, wrongImage: WrongAlone, rightImage: RightAlone, text: 'လမ်းဘေးကပ် ကားဘက်မျက်နှာမူပြီးလျှောက်ပါ' },
-  { category: 'walking', ageGroup: 'g3-g5', image: bridge, text: 'တံတားကနေပဲ ကူးပါ' },
+  { category: 'walking', ageGroup: 'g3-g5', image: bridge, text: 'လူကူတံတားရှိလျှင် တံတားကနေပဲ ကူးပါ' },
   { category: 'walking', ageGroup: 'g3-g5', image: green_light, text: 'မီးစိမ်းမှသာ ကူးပါ' },
   { category: 'walking', ageGroup: 'g3-g5', image: between, text: 'ကားကြားထဲက မထွက်ရ' },
-  { category: 'walking', ageGroup: 'g3-g5', image: using_phone, text: 'ဖုန်းမကြည့်ရ' },
+  { category: 'walking', ageGroup: 'g3-g5', image: using_phone, text: 'ကားလမ်း‌ဘေးမှလမ်းလျောက်လျှင် ဖုန်းမကြည့်ပါနှင့်' },
   // ── Walking / G6+ ──
   { category: 'walking', ageGroup: 'g6-plus', image: night_bright, text: 'ညဘက် အရောင်တောက်အင်္ကျီ ဝတ်ပါ' },
   { category: 'walking', ageGroup: 'g6-plus', image: umbrella, wrongImage: WrongRain, rightImage: RightRain, text: 'ထီးမြှင့်ဆောင်းပါ' },
@@ -95,7 +95,7 @@ export const RULES = [
   // ── Bicycle / KG-G2 ──
   { category: 'bicycle', ageGroup: 'kg-g2', image: helmet, text: 'ဦးထုပ်ဆောင်းပါ' },
   { category: 'bicycle', ageGroup: 'kg-g2', image: helmet, text: 'လူကြီးနဲ့ပဲစီးပါ' },
-  { category: 'bicycle', ageGroup: 'kg-g2', image: check, text: 'ဘရိတ်စစ်ပါ' },
+  { category: 'bicycle', ageGroup: 'kg-g2', image: check, text: 'စက်ဘီးမစီးခင် ဘရိတ်စစ်ပါ' },
   { category: 'bicycle', ageGroup: 'kg-g2', image: bike_walk, text: 'လမ်းကူးရင် ဆင်းတွန်းပါ' },
   // ── Bicycle / G3-G5 ──
   { category: 'bicycle', ageGroup: 'g3-g5', image: bike_ride, wrongImage: WrongBicycle, rightImage: RightBicycle, text: 'လမ်းဘေးကပ်စီးပါ' },
@@ -103,7 +103,7 @@ export const RULES = [
   // ── Bicycle / G6+ ──
   { category: 'bicycle', ageGroup: 'g6-plus', image: li, text: 'ညဘက် မီးတပ်စီးပါ' },
   { category: 'bicycle', ageGroup: 'g6-plus', image: black, text: 'အရောင်ဖျော့အင်္ကျီ ဝတ်ပါ' },
-  { category: 'bicycle', ageGroup: 'g6-plus', image: phone, text: 'ဖုန်းနားမထောင်ရ' },
+  { category: 'bicycle', ageGroup: 'g6-plus', image: phone, text: 'စက်ဘီးစီးနေတုန်း ဖုန်းနားမကြည့်ပါနှင့်' },
   { category: 'bicycle', ageGroup: 'g6-plus', image: slow, text: 'လမ်းဆုံမှာ နှေးပါ' },
   { category: 'bicycle', ageGroup: 'g6-plus', image: fastern, text: 'မေးကြိုးချိတ်ပါ' },
 
@@ -117,7 +117,7 @@ export const RULES = [
   { category: 'motorcycle', ageGroup: 'g6-plus', image: mnight, text: 'ညဘက် ရှေ့မီးဖွင့်ပါ' },
   { category: 'motorcycle', ageGroup: 'g6-plus', image: alcohol, text: 'အရက်မူးရင် မမောင်းရ' },
   { category: 'motorcycle', ageGroup: 'g6-plus', image: kid, text: 'ကလေးကိုရှေ့မတင်ရ' },
-  { category: 'motorcycle', ageGroup: 'g6-plus', image: horn, text: 'လမ်းဆုံမှာ နှေးပါ' },
+  { category: 'motorcycle', ageGroup: 'g6-plus', image: horn, text: 'လမ်းဆုံမှာ အရှိန်လျော့ပါ' },
 
   // ── School Bus / KG-G2 ──
   { category: 'schoolbus', ageGroup: 'kg-g2', image: wrong_ferry, wrongImage: WrongFerry, rightImage: RightFerry, text: 'ခေါင်းလက် မထုတ်ရ' },
@@ -127,5 +127,5 @@ export const RULES = [
   { category: 'schoolbus', ageGroup: 'g3-g5', image: stop, text: 'ကားသွားမှ ကူးပါ' },
   // ── School Bus / G6+ ──
   { category: 'schoolbus', ageGroup: 'g6-plus', image: stand, text: 'တံခါးဝမှာ မရပ်ရ' },
-  { category: 'schoolbus', ageGroup: 'g6-plus', image: driver, text: 'မောင်းသူကို ကြည့်ပါ' },
+  { category: 'schoolbus', ageGroup: 'g6-plus', image: driver, text: 'ယာဉ်မောင်းကို အမြဲသတိထားကြည့်ပါ' },
 ];
